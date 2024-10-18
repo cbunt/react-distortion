@@ -1,0 +1,36 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+
+<style>
+    main {
+        font-family: "Asap", Helvetica, Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .ladle-aside {
+        font-family: "Asap", Helvetica, Arial, sans-serif !important;
+    }
+
+    :root {
+        --ladle-bg-color-primary: #0A102E;
+        --ladle-color-primary: #DBE4FF;
+        --ladle-color-secondary: #415153;
+        --ladle-color-accent: #18F7F7;
+        --ladle-bg-color-secondary: color-mix(in hsl, var(--ladle-bg-color-primary), white 10%);
+
+        @media (prefers-color-scheme: light) {
+            --ladle-bg-color-primary: #FEF6C7;
+            --ladle-color-primary: #0c007d;
+            --ladle-color-secondary: #d6d6d6;
+            --ladle-color-accent: #034cdf;
+            --ladle-bg-color-secondary: color-mix(in hsl, var(--ladle-bg-color-primary), black 10%);
+        }
+
+        --ladle-color-hover: color-mix(in hsl, var(--ladle-color-primary), var(--ladle-bg-color-primary) 10%);
+        --ladle-blueprint: var(--ladle-bg-color-secondary);
+    }
+</style>

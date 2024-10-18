@@ -1,0 +1,14 @@
+.dtext {
+    composes: variables from './variables.module.css';
+
+    /* regular styling */
+    color: var(--hi-vis-color);
+    padding: 1rem;
+    width: 10rem;
+    border-radius: 1rem;
+
+    /* background styling */
+    position: relative;
+    --background-color: var(--secondary-color);
+    font-weight: 600;
+}

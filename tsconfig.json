@@ -3,7 +3,6 @@
         "outDir": "dist",
         "module": "esnext",
         "target": "es6",
-        "sourceMap": true,
         "allowJs": false,
         "esModuleInterop": true,
         "jsx": "react-jsx",
@@ -16,6 +15,7 @@
         "src/**/*.tsx",
         "examples/**/*.ts",
         "examples/**/*.tsx",
+        "src/distort-component.test.tsx"
     ],
     "exclude": [
         "node_modules/**",

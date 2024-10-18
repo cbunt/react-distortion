@@ -1,49 +1,35 @@
 .dbutton {
-    color: var(--accent-3);
-    --border-color: var(--accent-3);
-    --border-width: max(3px, 0.1rem);
+    composes: variables from './variables.module.css';
 
-    border-radius: 3px;
-    border: var(--border-width) solid #0000;
-
-    position: relative;
-    grid-column: span 2;
-    height: 1.5rem;
-
+    /* disable default styling */
+    font: inherit;
     appearance: none;
     box-shadow: none;
+    background-color: #0000;
 
+    /* button styling */
+    color: var(--accent-1);
+    cursor: pointer;
+    font-weight: bold;
+    height: 1.5rem;
+    border-radius: 0.5rem;
+
+    /* DistortBorder styling */
+    --border-width: 0.3rem;
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
 
-    background-color: #0000;
-    overflow: visible;
+    /* a scale animation, for fun */
+    transition: var(--scale-transition);
 
-    cursor: pointer;
-    user-select: none;
-    touch-action: manipulation;
-    font-family: inherit;
-    font-stretch: inherit;
-    font-size: inherit;
-    font-weight: 800;
-
-    transition:
-        font-size 0.1s var(--scale-bezier),
-        font-stretch 0.15s var(--scale-bezier),
-        var(--scale-transition);
-
-    &:hover:not(:disabled) {
+    &:hover {
         transform: scale(1.015);
-        font-stretch: 125%;
     }
 
-    &:active:not(:disabled) {
-        transform: scale(0.995);
-        font-stretch: 120%;
-    }
-
-    &:disabled {
-        cursor: default;
+    &:active {
+        transform: scale(0.95);
     }
 }

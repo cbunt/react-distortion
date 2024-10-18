@@ -5,20 +5,25 @@ import dts from 'rollup-plugin-dts'
 /** @type {import('rollup').RollupOptions[]} */
 export default [
     {
-        input: 'src/index.ts',
-        external: ['react', 'react/jsx-runtime'],
-        output: [
-            {
-                file: 'dist/index.cjs',
-                format: 'cjs',
-                name: 'react-distortion',
-                exports: 'named'
-            },
-            {
-                file: 'dist/index.js',
-                format: 'esm',
-            }
+        jsx: 'preserve-react',
+        input: {
+            'distort-component': 'src/distort-component.tsx',
+            'child-elements': 'src/child-elements.tsx',
+        },
+        output : [
+                {
+                    dir: 'dist',
+                    entryFileNames: '[name].cjs',
+                    format: 'cjs',
+                    exports: 'named'
+                },
+                {
+                    dir: 'dist',
+                    entryFileNames: '[name].js',
+                    format: 'esm',
+                }
         ],
+        external: ['react', 'react/jsx-runtime'],
         plugins: [
             typescript({ tsconfig: './tsconfig.json' }),
             css({
@@ -28,10 +33,15 @@ export default [
         ]
     },
     {
-        input: 'src/index.ts',
+        input: {
+            'distort-component': 'src/distort-component.tsx',
+            'child-elements': 'src/child-elements.tsx',
+        },
         external: ['react', 'react/jsx-runtime'],
-        output: [{ file: "dist/index.d.ts", format: "es" }],
+        output: [{ 
+            dir: 'dist', 
+            entryFileNames: '[name].d.ts',
+        }],
         plugins: [dts()],
     }
 ]
-

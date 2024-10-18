@@ -1,0 +1,61 @@
+.dslider {
+    composes: variables from './variables.module.css';
+
+    /* utility variables */
+    --track-color: var(--accent-3);
+    --slider-color: oklch(from var(--track-color) calc(l * var(--ok-l)) calc(c * 0.6) h);
+    --hover-color: color-mix(in oklch, var(--slider-color) 50%, var(--track-color));
+
+    /* disable default styling */
+    background: #0000;
+    appearance: none;
+
+    /* range styling */
+    border-radius: 0.4rem;
+    border: solid 0.25rem var(--track-color);
+    color: var(--slider-color);
+    height: 1rem;
+    cursor: pointer;
+
+    /* animations */
+    transition:
+        background-color 0.3s,
+        var(--scale-transition);
+
+    &:hover {
+        transform: scale(1.03);
+
+        &::-webkit-slider-thumb {
+            color: var(--hover-color);
+        }
+
+        &::-moz-range-progress {
+            color: var(--hover-color);
+        }
+    }
+
+    &:active {
+        transform: scale(0.99);
+    }
+
+    /* webkit styles */
+    &::-webkit-slider-thumb {
+        transition: all 0.3s;
+        width: 0;
+        appearance: inherit;
+        box-shadow: calc(-100vmax + 2px) 0 0 100vmax currentcolor;
+        filter: inherit;
+    }
+
+    /* firefox styles */
+    &::-moz-range-track,
+    &::-moz-range-thumb {
+        visibility: hidden;
+    }
+
+    &::-moz-range-progress {
+        background: currentcolor;
+        transition: all 0.3s;
+        height: 100%;
+    }
+}
