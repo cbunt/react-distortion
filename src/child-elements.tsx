@@ -8,7 +8,7 @@
  * Its elements are simple divs with classes pre-applied.
  * Importing the module will inject its CSS into the head
  * of the document. The CSS source can be found at
- * [src/child-elements.module.css](src/child-elements.module.css).
+ * [src/child-elements.module.css](https://github.com/cbunt/react-distortion/blob/main/src/child-elements.module.css).
  *
  * @module
  */

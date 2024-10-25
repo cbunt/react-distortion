@@ -2,7 +2,7 @@
 
 A React component library for adding animated procedural distortion to other components.
 
-![example-spread.gif](example-spread.gif)
+![Three distorted and animated text boxes on a blue background reading "Borders! Backgrounds! The whole dang thing"](https://github.com/cbunt/react-distortion/blob/main/example-spread.gif?raw=true)
 
 Pure CSS and HTML Distortion, with animations in JS. All through inline SVGs,
 [feTurbulence](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence)
@@ -133,7 +133,7 @@ A submodule of utility elements covering common use cases of
 Its elements are simple divs with classes pre-applied.
 Importing the module will inject its CSS into the head
 of the document. The CSS source can be found at
-[src/child-elements.module.css](src/child-elements.module.css).
+[src/child-elements.module.css](https://github.com/cbunt/react-distortion/blob/main/src/child-elements.module.css).
 
 ### DistortBackground
 
