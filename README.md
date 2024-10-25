@@ -9,6 +9,13 @@ Pure CSS and HTML Distortion, with animations in JS. All through inline SVGs,
 and [feDisplacementMap](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap)
 elements, and CSS filters.
 
+***
+
+|module|minified size|gzipped|
+|------|-------------|-------|
+|react-distortion|11.8 kB|4.52 kB|
+|react-distortion/child-elements|9.6 kB|3.59 kB|
+
 ## Component
 
 ### DistortComponent()
