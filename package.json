@@ -1,6 +1,6 @@
 {
   "name": "react-distortion",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A React component library for adding animated procedural distortion to other components.",
   "scripts": {
     "build": "rimraf dist && pnpm rollup -c",
