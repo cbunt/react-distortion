@@ -1,6 +1,9 @@
 /**
  * @packageDocumentation
  *
+ * [![npm version](https://badge.fury.io/js/react-distortion.svg)](https://badge.fury.io/js/react-distortion)
+ * [![bundlejs size](https://deno.bundlejs.com/badge?q=react-distortion@1.0.1)](https://deno.bundlejs.com/badge?q=react-distortion@1.0.1)
+ *
  * A React component library for adding animated procedural distortion to other components.
  *
  * ![Three distorted and animated text boxes on a blue background reading "Borders! Backgrounds! The whole dang thing"](https://github.com/cbunt/react-distortion/blob/main/example-spread.gif?raw=true)
@@ -15,11 +18,11 @@ import {
     CSSProperties,
     Children,
     ComponentProps,
-    ComponentPropsWithRef,
-    ComponentType,
+    ElementRef,
     ElementType,
     EventHandler,
     ReactElement,
+    ReactNode,
     Ref,
     SyntheticEvent,
     cloneElement,
@@ -69,7 +72,10 @@ function combineCSSFilter(filterId: string, style?: CSSProperties) {
  *
  * @category Options
  */
-export type DistortOptions<E extends ElementType = 'div'> = {
+export type DistortOptions<E extends ElementType<{
+    style?: CSSProperties,
+    children?: ReactNode,
+}> = 'div'> = {
     /**
      * The react component for this to wrap.
      */
@@ -137,7 +143,7 @@ export type DistortOptions<E extends ElementType = 'div'> = {
      * If passed as a Component, it's created as `<distortChildren style={{ filter }} />`.
      */
     distortChildren?:
-        ComponentType<{ style?: CSSProperties }>
+        ElementType<{ style?: CSSProperties }>
         | ReactElement<{ style?: CSSProperties }>
         | ReactElement<{ style?: CSSProperties }>[],
     /**
@@ -147,7 +153,7 @@ export type DistortOptions<E extends ElementType = 'div'> = {
     /**
     * A {@link Ref} to pass to the wrapped component.
     */
-    forwardedRef?: ComponentPropsWithRef<E>['ref'],
+    forwardedRef?: Ref<ElementRef<E>>,
 };
 
 /**
@@ -453,7 +459,10 @@ function _distortComponent<E extends ElementType = 'div'>({
  *
  * @category Component
  */
-const DistortComponent = forwardRef(_distortComponent) as <E extends ElementType = 'div'>(
+const DistortComponent = forwardRef(_distortComponent) as <E extends ElementType<{
+    style?: CSSProperties,
+    children?: ReactNode,
+}> = 'div'>(
     props: Substitute<ComponentProps<E>, DistortOptions<E>>,
 ) => ReturnType<typeof _distortComponent<E>>;
 
