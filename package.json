@@ -21,6 +21,9 @@
   "author": "Cass Bunting <cass@cbunt.ing>",
   "license": "MIT",
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "require": "./dist/distort-component.cjs",
