@@ -1,7 +1,7 @@
 // @ts-check
 
 import { Comment, Converter, ReflectionKind } from 'typedoc';
-import { MarkdownThemeContext, MarkdownTheme } from 'typedoc-plugin-markdown';
+import { MarkdownThemeContext, MarkdownTheme, MarkdownPageEvent } from 'typedoc-plugin-markdown';
 
 /** 
  *  @param {import('typedoc').ContainerReflection} parent 
@@ -55,4 +55,9 @@ class MinimalMarkdownTheme extends MarkdownTheme {
 export function load(app) {
     app.renderer.defineTheme('minimal', MinimalMarkdownTheme);
     app.converter.on(Converter.EVENT_RESOLVE_BEGIN, (p) => movePackageDoc(p.project), 200);
+
+    // Remove redundant file anchors.
+    app.renderer.on(MarkdownPageEvent.END, (page) => {
+        page.contents = page.contents?.replaceAll('README.md#','#',);
+    });
 }
