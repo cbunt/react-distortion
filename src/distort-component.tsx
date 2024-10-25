@@ -60,7 +60,7 @@ function definedProperties<T extends object>(obj: T) {
 
 function combineCSSFilter(filterId: string, style?: CSSProperties) {
     const distortFilter = `url(#${filterId})`;
-    return style?.filter == null ? distortFilter : `${style.filter}, ${distortFilter}`;
+    return style?.filter == null ? distortFilter : `${style.filter} ${distortFilter}`;
 }
 
 /**
