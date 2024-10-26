@@ -15,10 +15,10 @@
  *
  * ***
  *
- * |module|minified size|gzipped|
- * |------|-------------|-------|
- * |react-distortion|11.8 kB|4.52 kB|
- * |react-distortion/child-elements|9.6 kB|3.59 kB|
+ * | module                          | minified | gzipped |
+ * | ------------------------------- | -------- | ------- |
+ * | react-distortion                |  11.8 kB | 4.52 kB |
+ * | react-distortion/child-elements |   9.6 kB | 3.59 kB |
  */
 
 import {
@@ -27,11 +27,9 @@ import {
     ComponentProps,
     ElementRef,
     ElementType,
-    EventHandler,
     ReactElement,
-    ReactNode,
+    ReactHTML,
     Ref,
-    SyntheticEvent,
     cloneElement,
     forwardRef,
     isValidElement,
@@ -44,10 +42,6 @@ import {
     useState,
 } from 'react';
 
-type Substitute<T extends object, U extends object> = {
-    [K in keyof T as K extends keyof U ? never : K]: T[K];
-} & U;
-
 function definedProperties<T extends object>(obj: T) {
     const res = {} as T;
     for (const key of Object.keys(obj) as (keyof T)[]) {
@@ -58,10 +52,64 @@ function definedProperties<T extends object>(obj: T) {
     return res as { [K in keyof T as T[K] extends null | undefined ? never : K]: T[K] };
 }
 
-function combineCSSFilter(filterId: string, style?: CSSProperties) {
-    const distortFilter = `url(#${filterId})`;
-    return style?.filter == null ? distortFilter : `${style.filter} ${distortFilter}`;
+function joinFilterToStyle(filterURL: string, style?: CSSProperties): CSSProperties {
+    // Explicit cast to suppress: error TS2339: Property 'filter' does not exist on type 'CSSProperties'
+    // during build. No idea why it's necessary. It goes away when using import('csstype').Properties
+    // directly rather than the react alias. Checked 26-10-2024.
+    const cast = (style ?? {}) as CSSProperties & { filter?: string };
+    return { ...cast, filter: cast.filter == null ? filterURL : `${cast.filter} ${filterURL}` };
 }
+
+/**
+ * A more robust version of `Omit<Other, keyof Base> & Base`,
+ * giving the intersection of Other & Base with Base's properties
+ * taking precedence.
+ * @category Utility Types
+ */
+export type Substitute<Other extends object, Base extends object> = {
+    [K in keyof Other as K extends keyof Base ? never : K]: Other[K];
+} & Base;
+
+/**
+ * HTML elements that don't accept children.
+ * @category Utility Types
+ */
+export type ChildlessHTMLElements =
+    'area'
+    | 'base'
+    | 'basefont'
+    | 'bgsound'
+    | 'br'
+    | 'col'
+    | 'command'
+    | 'embed'
+    | 'frame'
+    | 'hr'
+    | 'image'
+    | 'img'
+    | 'input'
+    | 'isindex'
+    | 'keygen'
+    | 'link'
+    | 'menuitem'
+    | 'meta'
+    | 'nextid'
+    | 'param'
+    | 'script'
+    | 'source'
+    | 'style'
+    | 'template'
+    | 'textarea'
+    | 'title'
+    | 'track'
+    | 'wbr';
+
+/**
+ * A restricted ElementType which doesn't accept intrinsics that can't render children.
+ * @category Utility Types
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type RequiredElementType = ElementType<any, keyof Omit<ReactHTML, ChildlessHTMLElements>>;
 
 /**
  * Options for {@link DistortComponent}.
@@ -79,10 +127,7 @@ function combineCSSFilter(filterId: string, style?: CSSProperties) {
  *
  * @category Options
  */
-export type DistortOptions<E extends ElementType<{
-    style?: CSSProperties,
-    children?: ReactNode,
-}> = 'div'> = {
+export type DistortOptions<E extends RequiredElementType = 'div'> = {
     /**
      * The react component for this to wrap.
      */
@@ -138,7 +183,7 @@ export type DistortOptions<E extends ElementType<{
     getDistortionSeed?: () => number,
     /**
      * Child elements that are distorted even when
-     * {@link DistortFilterOptions.disable disable} = true.
+     * {@link DistortFilterOptions.disable | disable} = true.
      *
      * @remarks
      * Useful for distorted elements of components which should otherwise
@@ -150,7 +195,7 @@ export type DistortOptions<E extends ElementType<{
      * If passed as a Component, it's created as `<distortChildren style={{ filter }} />`.
      */
     distortChildren?:
-        ElementType<{ style?: CSSProperties }>
+        ElementType<{ style?: CSSProperties } & Partial<Record<PropertyKey, unknown>>>
         | ReactElement<{ style?: CSSProperties }>
         | ReactElement<{ style?: CSSProperties }>[],
     /**
@@ -280,7 +325,7 @@ const defaultProps = {
     steps: 5,
 } as const satisfies Required<DistortFilterOptions>;
 
-function _distortComponent<E extends ElementType = 'div'>({
+function _distortComponent<E extends RequiredElementType = 'div'>({
     getDistortionSeed = () => Math.random() * (2 ** 16) | 0,
     minRefresh = 100,
     as,
@@ -303,7 +348,8 @@ function _distortComponent<E extends ElementType = 'div'>({
 }: Substitute<ComponentProps<E>, DistortOptions<E>>, ref: Ref<DistortHandle>) {
     const As = as ?? 'div';
     const filterId = useId();
-    const filter = useMemo(() => combineCSSFilter(filterId, style), [filterId, style?.filter]);
+    const filter = `url(#${filterId})`;
+    const finalStyle = useMemo(() => joinFilterToStyle(filter, style), [filter, style]);
     const seedTime = useRef(Date.now());
 
     const baseFilter = useMemo(() => defaultFilter != null
@@ -361,7 +407,6 @@ function _distortComponent<E extends ElementType = 'div'>({
         return () => { clearInterval(interval); };
     }, [baseFilter, refreshSeed]);
 
-    // using a single
     useEffect(() => {
         if (state.active && activeFilter != null) {
             setMode('active');
@@ -383,24 +428,13 @@ function _distortComponent<E extends ElementType = 'div'>({
         }
     }, [currentMode, activeFilter, focusFilter, hoverFilter, baseFilter]);
 
-    const stateCallback = useCallback(function<E extends SyntheticEvent>(
-        value: boolean,
-        name: string,
-        fn?: EventHandler<E>,
-    ) {
-        return (e: E) => {
-            setState((curr) => ({ ...curr, [name]: value }));
-            fn?.(e);
-        };
-    }, []);
-
     const overlay = useMemo(() => {
         if (distortChildren == null) return distortChildren;
 
         if (isValidElement(distortChildren) || distortChildren instanceof Array) {
             return Children.map(distortChildren, (child) => {
                 const style = child.props.style ?? {};
-                return cloneElement(child, { style: { ...style, filter: combineCSSFilter(filter, style) } });
+                return cloneElement(child, { style: joinFilterToStyle(filter, style) });
             });
         }
 
@@ -410,13 +444,18 @@ function _distortComponent<E extends ElementType = 'div'>({
 
     return (
         <As
-            style={{ ...(style ?? {}), filter: disabled ? style?.filter as string | undefined : filter }}
-            onFocus={useCallback(stateCallback(true, 'focus', onFocus), [onFocus])}
-            onBlur={useCallback(stateCallback(false, 'focus', onBlur), [onBlur])}
-            onMouseEnter={useCallback(stateCallback(true, 'hover', onMouseEnter), [onMouseEnter])}
-            onMouseLeave={useCallback(stateCallback(false, 'hover', onMouseLeave), [onMouseLeave])}
-            onMouseDown={useCallback(stateCallback(true, 'active', onMouseDown), [onMouseDown])}
-            onMouseUp={useCallback(stateCallback(false, 'active', onMouseUp), [onMouseUp])}
+            style={disabled ? style : finalStyle}
+            // These will break if the handlers are treated as something other than functions by the
+            // wrapper component. More robust typing seems to break a lot of flexibility, and given
+            // the weirdness of the edge case, I'm just ignoring it.
+            /* eslint-disable @typescript-eslint/no-unsafe-call */
+            onFocus={(...e) => { setState((curr) => ({ ...curr, focus: true })); onFocus?.(...e); }}
+            onBlur={(...e) => { setState((curr) => ({ ...curr, focus: false })); onBlur?.(...e); }}
+            onMouseEnter={(...e) => { setState((curr) => ({ ...curr, hover: true })); onMouseEnter?.(...e); }}
+            onMouseLeave={(...e) => { setState((curr) => ({ ...curr, hover: false })); onMouseLeave?.(...e); }}
+            onMouseDown={(...e) => { setState((curr) => ({ ...curr, active: true })); onMouseDown?.(...e); }}
+            onMouseUp={(...e) => { setState((curr) => ({ ...curr, active: false })); onMouseUp?.(...e); }}
+            /* eslint-enable @typescript-eslint/no-unsafe-call */
             ref={forwardedRef}
             {...rest}
         >
@@ -466,10 +505,7 @@ function _distortComponent<E extends ElementType = 'div'>({
  *
  * @category Component
  */
-const DistortComponent = forwardRef(_distortComponent) as <E extends ElementType<{
-    style?: CSSProperties,
-    children?: ReactNode,
-}> = 'div'>(
+const DistortComponent = forwardRef(_distortComponent) as <E extends RequiredElementType = 'div'>(
     props: Substitute<ComponentProps<E>, DistortOptions<E>>,
 ) => ReturnType<typeof _distortComponent<E>>;
 

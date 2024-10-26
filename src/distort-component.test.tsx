@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode, Ref, forwardRef, useImperativeHandle } from 'react';
+import { JSX, Ref, forwardRef, useImperativeHandle } from 'react';
 import { act, fireEvent, render } from '@testing-library/react';
 
 import DistortComponent, { DistortHandle } from './distort-component';
@@ -12,14 +12,12 @@ const getDistort = (...[props]: Parameters<typeof DistortComponent>) => {
 };
 
 type TestHandle = { check: () => boolean };
-type TestProps = {
+type TestProps = JSX.IntrinsicElements['div'] & {
     baseSeed?: number,
-    children?: ReactNode,
-    style?: CSSProperties,
-    'data-testid'?: string,
+    ref?: TestHandle,
 };
 
-const TestComp = forwardRef(function TestComp({
+const TestComp = forwardRef(function TestCompt({
     baseSeed,
     ...rest
 }: TestProps, ref: Ref<TestHandle>) {
@@ -28,7 +26,7 @@ const TestComp = forwardRef(function TestComp({
     }), []);
 
     expect(baseSeed).toBeUndefined();
-    return <div {...rest} id="dummy" />;
+    return <div {...rest} ref={undefined} id="dummy" />;
 });
 
 describe('filter states', () => {
@@ -315,18 +313,39 @@ describe('seed changes', () => {
 
 describe('prop pass through', () => {
     test('events', () => {
-        let success = false;
+        let successes = 0;
+        const succeed = () => ++successes;
 
         const elm = getDistort({
             hoverFilter: { disable: true },
-            onMouseEnter: () => { success = true; },
+            onMouseEnter: succeed,
+            onMouseLeave: succeed,
+            onFocus: succeed,
+            onBlur: succeed,
+            onMouseDown: succeed,
+            onMouseUp: succeed,
         });
 
         fireEvent.mouseEnter(elm);
-        expect(success).toBeTruthy();
+        expect(successes).toBe(1);
 
         const style = window.getComputedStyle(elm);
         expect(style.filter).toBe('');
+
+        fireEvent.mouseLeave(elm);
+        expect(successes).toBe(2);
+
+        fireEvent.focus(elm);
+        expect(successes).toBe(3);
+
+        fireEvent.blur(elm);
+        expect(successes).toBe(4);
+
+        fireEvent.mouseDown(elm);
+        expect(successes).toBe(5);
+
+        fireEvent.mouseUp(elm);
+        expect(successes).toBe(6);
     });
 
     test('css filter', () => {

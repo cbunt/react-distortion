@@ -14,10 +14,10 @@ elements, and CSS filters.
 
 ***
 
-|module|minified size|gzipped|
-|------|-------------|-------|
-|react-distortion|11.8 kB|4.52 kB|
-|react-distortion/child-elements|9.6 kB|3.59 kB|
+| module                          | minified | gzipped |
+| ------------------------------- | -------- | ------- |
+| react-distortion                |  11.8 kB | 4.52 kB |
+| react-distortion/child-elements |   9.6 kB | 3.59 kB |
 
 ## Component
 
@@ -29,13 +29,13 @@ Component that distorts itself and its children.
 
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
-| `E` *extends* [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L89)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586);`children`: [`ReactNode`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L479); \}\> | `"div"` | The base component type; inferred from [as](#as). |
+| `E` *extends* [`RequiredElementType`](#requiredelementtype) | `"div"` | The base component type; inferred from [as](#as). |
 
 #### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
-| `props` | `Substitute`\<[`ComponentProps`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L1660)\<`E`\>, [`DistortOptions`](#distortoptionse)\<`E`\>\> |
+| `props` | [`Substitute`](#substituteother-base)\<[`ComponentProps`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L1660)\<`E`\>, [`DistortOptions`](#distortoptionse)\<`E`\>\> |
 
 #### Remarks
 
@@ -54,7 +54,7 @@ Options for [DistortComponent](#distortcomponent).
 
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
-| `E` *extends* [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L89)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586);`children`: [`ReactNode`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L479); \}\> | `"div"` | The base component type. Inferred from [as](#as). |
+| `E` *extends* [`RequiredElementType`](#requiredelementtype) | `"div"` | The base component type. Inferred from [as](#as). |
 
 #### Type declaration
 
@@ -68,7 +68,7 @@ Options for [DistortComponent](#distortcomponent).
 | `baseSeed`? | `number` | Starting [seed](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/seed) for the feTurbulence noise filter. <br><br>**Remarks**<br> Loop animations increment from this value, while endless animations reset it. Entering a state with `resetSeed = true` will return to it. |
 | `minRefresh`? | `number` | Minimum milliseconds between seed refreshes. |
 | `getDistortionSeed`? | () => `number` | A function returning an integer to pass to feTurbulence's seed |
-| `distortChildren`? | [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L89)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \}\> \| [`ReactElement`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L328)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \}\> \| [`ReactElement`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L328)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \}\>[] | Child elements that are distorted even when [disable](#disable) = true. <br><br>**Remarks**<br> Useful for distorted elements of components which should otherwise remain legible, such as a distorted border on a text area. If given ReactElements, children are cloned via `React.cloneElement`, with the distortion filter added to `style.filter`. If passed as a Component, it's created as `<distortChildren style={{ filter }} />`. |
+| `distortChildren`? | [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L89)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \} & `Partial`\<`Record`\<`PropertyKey`, `unknown`\>\>\> \| [`ReactElement`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L328)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \}\> \| [`ReactElement`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L328)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \}\>[] | Child elements that are distorted even when [disable](#disable) = true. <br><br>**Remarks**<br> Useful for distorted elements of components which should otherwise remain legible, such as a distorted border on a text area. If given ReactElements, children are cloned via `React.cloneElement`, with the distortion filter added to `style.filter`. If passed as a Component, it's created as `<distortChildren style={{ filter }} />`. |
 | `ref`? | [`Ref`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190)\<[`DistortHandle`](#distorthandle)\> | Component's imperative handle. |
 | `forwardedRef`? | [`Ref`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190)\<[`ElementRef`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L222)\<`E`\>\> | A [Ref](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190) to pass to the wrapped component. |
 
@@ -133,6 +133,33 @@ but the values may also be passed as strings.
 | Name | Type | Description |
 | ------ | ------ | ------ |
 | `refreshSeed` | (`seed`?) => `void` | Refreshes the filter seed. <br><br>**Remarks**<br> Useful for situational animations, such as animating a range on input. Ignored if the last seed refresh was less than [minRefresh](#minrefresh) milliseconds ago, including automatic animation seed refreshes. |
+
+## Utility Types
+
+### Substitute\<Other, Base\>
+
+A more robust version of `Omit<Other, keyof Base> & Base`,
+giving the intersection of Other & Base with Base's properties
+taking precedence.
+
+#### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Other` *extends* `object` |
+| `Base` *extends* `object` |
+
+***
+
+### ChildlessHTMLElements
+
+HTML elements that don't accept children.
+
+***
+
+### RequiredElementType
+
+A restricted ElementType which doesn't accept intrinsics that can't render children.
 
 ## child-elements
 

@@ -28,6 +28,7 @@ const baseConfig = {
     categoryOrder: [
         "Component",
         "Options",
+        "Utility Types",
         "child-elements"
     ],
 }
