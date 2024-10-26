@@ -20,6 +20,10 @@
   ],
   "author": "Cass Bunting <cass@cbunt.ing>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cbunt/react-distortion"
+  },
   "type": "module",
   "files": [
     "dist"
