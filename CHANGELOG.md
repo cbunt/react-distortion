@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.0] (2024-10-25)
 ### BREAKING CHANGES
--   More robust typing for `DistortionOptions`, requiring the `as` element type to support style and children props.
+-   More robust typing of `DistortionOptions`, requiring `as` intrinsic elements to support children.
+
+### Fixes
+-   Moved @types/react to peer dependencies.
+-   Syntax when joining CSS filters
 
 ### Added
 -   CHANGELOG.md.
