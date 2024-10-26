@@ -1,7 +1,7 @@
 # react-distortion
 
-[![npm version](https://badge.fury.io/js/react-distortion.svg)](https://badge.fury.io/js/react-distortion)
-[![bundlejs size](https://deno.bundlejs.com/badge?q=react-distortion@1.0.1)](https://deno.bundlejs.com/badge?q=react-distortion@1.0.1)
+[![npm version](https://badge.fury.io/js/react-distortion.svg)](https://www.npmjs.com/package/react-distortion)
+[![react-distortion bundlejs size](https://deno.bundlejs.com/badge?q=react-distortion&badge=detailed)](https://bundlejs.com/?q=react-distortion)
 
 A React component library for adding animated procedural distortion to other components.
 
@@ -11,13 +11,6 @@ Pure CSS and HTML Distortion, with animations in JS. All through inline SVGs,
 [feTurbulence](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence)
 and [feDisplacementMap](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap)
 elements, and CSS filters.
-
-***
-
-| module                          | minified | gzipped |
-| ------------------------------- | -------- | ------- |
-| react-distortion                |  11.8 kB | 4.52 kB |
-| react-distortion/child-elements |   9.6 kB | 3.59 kB |
 
 ## Component
 
@@ -162,6 +155,8 @@ HTML elements that don't accept children.
 A restricted ElementType which doesn't accept intrinsics that can't render children.
 
 ## child-elements
+
+[![react-distortion/child-elements bundlejs size](https://deno.bundlejs.com/badge?q=react-distortion/child-elements&badge=detailed)](https://bundlejs.com/?q=react-distortion/child-elements)
 
 A submodule of utility elements covering common use cases of
 [DistortOptions.distortChildren](#distortchildren). Imported from

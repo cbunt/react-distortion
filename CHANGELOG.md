@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 -   Repo to package.json
+-   Detailed bundlejs badges
 
 ## [1.1.0] (2024-10-25)
 ### BREAKING CHANGES

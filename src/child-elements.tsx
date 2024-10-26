@@ -1,6 +1,8 @@
 /**
  * @categoryDescription child-elements
  *
+ * [![react-distortion/child-elements bundlejs size](https://deno.bundlejs.com/badge?q=react-distortion/child-elements&badge=detailed)](https://bundlejs.com/?q=react-distortion/child-elements)
+ *
  * A submodule of utility elements covering common use cases of
  * {@link DistortOptions.distortChildren}. Imported from
  * `react-distortion/child-elements`.
