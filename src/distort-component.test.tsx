@@ -295,6 +295,38 @@ describe('seed changes', () => {
         expect(feTurbulence?.getAttribute('seed')).toBe('0');
     });
 
+    test('animationJitter', () => {
+        Math.random = jest.fn(() => 1);
+
+        const elm = getDistort({
+            defaultFilter: {
+                animation: 'loop',
+                animationInterval: 1,
+                animationJitter: 1,
+            },
+            hoverFilter: {
+                animationJitter: () => 1,
+            },
+            baseSeed: 0,
+        });
+
+        const feTurbulence = elm.querySelector('feTurbulence');
+        expect(feTurbulence?.getAttribute('seed')).toBe('0');
+
+        act(() => { jest.advanceTimersByTime(1); });
+        expect(feTurbulence?.getAttribute('seed')).toBe('0');
+
+        act(() => { jest.advanceTimersByTime(1); });
+        expect(feTurbulence?.getAttribute('seed')).toBe('1');
+
+        fireEvent.mouseEnter(elm);
+        act(() => { jest.advanceTimersByTime(1); });
+        expect(feTurbulence?.getAttribute('seed')).toBe('0');
+
+        act(() => { jest.advanceTimersByTime(1); });
+        expect(feTurbulence?.getAttribute('seed')).toBe('1');
+    });
+
     test('static', () => {
         const elm = getDistort({
             defaultFilter: { animationInterval: 1 },

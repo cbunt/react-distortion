@@ -53,6 +53,31 @@ function joinFilterToStyle(filterURL: string, style?: CSSProperties): CSSPropert
     return { ...cast, filter: cast.filter == null ? filterURL : `${cast.filter} ${filterURL}` };
 }
 
+function setRandomInterval(intervalFunction: () => unknown, delay: number, jitter?: number | (() => number)) {
+    let timeout: ReturnType<typeof setTimeout>;
+
+    const getJitter = typeof jitter === 'function'
+        ? jitter
+        : jitter
+            ? () => jitter * Math.random()
+            : () => 0;
+
+    const runInterval = () => {
+        const timeoutFunction = () => {
+            intervalFunction();
+            runInterval();
+        };
+
+        timeout = setTimeout(timeoutFunction, delay + getJitter());
+    };
+
+    runInterval();
+
+    return {
+        clear() { clearTimeout(timeout); },
+    };
+};
+
 /**
  * A more robust version of `Omit<Other, keyof Base> & Base`,
  * giving the intersection of Other & Base with Base's properties
@@ -134,6 +159,7 @@ export type DistortOptions<E extends RequiredElementType = 'div'> = {
      * @defaultValue ```ts
      * animation: 'static',
      * animationInterval: 400,
+     * animationJitter: 0,
      * baseFrequency: 0.015,
      * disable: false
      * numOctaves: 3,
@@ -215,6 +241,11 @@ export type DistortFilterOptions = {
      * {@link DistortFilterOptions.animation animation} = 'static'.
      */
     animationInterval?: number,
+    /**
+     * Milliseconds to randomly vary animationInterval by, or a function
+     * that returns that value.
+     */
+    animationJitter?: number | (() => number),
     /**
      * The feTurbulence noise filter's
      * [base frequency](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence).
@@ -310,6 +341,7 @@ export type DistortHandle = {
 const defaultProps = {
     animation: 'static',
     animationInterval: 400,
+    animationJitter: 0,
     baseFrequency: 0.015,
     disable: false,
     numOctaves: 3,
@@ -385,23 +417,26 @@ function _distortComponent<E extends RequiredElementType = 'div'>({
         if (animation === 'static') return undefined;
 
         if (animation === 'endless') {
-            const interval = setInterval(refreshSeed, newFilter.animationInterval);
-            return () => { clearInterval(interval); };
+            const interval = setRandomInterval(refreshSeed, newFilter.animationInterval, newFilter.animationJitter);
+            return () => { interval.clear(); };
         }
 
         const alternating = animation === 'alternating endless' || animation === 'alternating loop';
-        const endless = animation !== 'loop' && animation !== 'alternating loop';
+        const endless = animation === 'alternating endless';
         const steps = !endless ? newFilter.steps : 2;
 
-        const interval = setInterval(() => {
+        const interval = setRandomInterval(() => {
             if (alternating) setFilterProps((curr) => (curr === baseFilter ? newFilter : baseFilter));
             setSeedOffset((curr) => {
-                if (endless && (curr & 1) !== 0) refreshSeed();
+                if (endless && (curr & 1) === 0) {
+                    seedTime.current = Date.now();
+                    setSeed(getDistortionSeed());
+                }
                 return (curr + 1) % steps;
             });
-        }, newFilter.animationInterval);
+        }, newFilter.animationInterval, newFilter.animationJitter);
 
-        return () => { clearInterval(interval); };
+        return () => { interval.clear(); };
     }, [baseFilter, refreshSeed]);
 
     useEffect(() => {
