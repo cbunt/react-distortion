@@ -87,6 +87,7 @@ Options for applied filters and animations.
 | ------ | ------ | ------ |
 | `animation`? | \`$\{DistortAnimation\}\` | The animation behavior of the distortion. |
 | `animationInterval`? | `number` | The milliseconds between animation seed changes. Unused when [animation](#animation) = 'static'. |
+| `animationJitter`? | `number` \| () => `number` | Milliseconds to randomly vary animationInterval by, or a function that returns that value. |
 | `baseFrequency`? | `number` | The feTurbulence noise filter's [base frequency](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence). |
 | `disable`? | `boolean` | Disables the filter. |
 | `numOctaves`? | `number` | The feTurbulence noise filter's [number of octaves](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/numOctaves). |
@@ -178,7 +179,8 @@ Background color can be set via the parent's background color
 or a `--background-color` css variable.
 
 The parent element's background should be transparent, either with
-`background: none` or `background-color: #0000`.
+`background: none` or `background-color: #0000`, and its position
+should be relative.
 
 ***
 
@@ -193,7 +195,8 @@ Color can be set via the `--border-color` css variable or the parent element's c
 
 Border width should be set via a `--border-width` css variable, which is also used
 to calculate the element's position. `border-width: inherit` is used as a fallback, but
-may result in incorrect positioning.
+may result in incorrect positioning. The parent element's position should be set to
+relative.
 
 ***
 

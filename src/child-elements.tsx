@@ -28,7 +28,8 @@ import styles from './child-elements.module.css';
  * or a `--background-color` css variable.
  *
  * The parent element's background should be transparent, either with
- * `background: none` or `background-color: #0000`.
+ * `background: none` or `background-color: #0000`, and its position
+ * should be relative.
  *
  * @category child-elements
  */
@@ -43,7 +44,8 @@ export const DistortBackground = <div className={styles.background} />;
  *
  * Border width should be set via a `--border-width` css variable, which is also used
  * to calculate the element's position. `border-width: inherit` is used as a fallback, but
- * may result in incorrect positioning.
+ * may result in incorrect positioning. The parent element's position should be set to
+ * relative.
  *
  * @category child-elements
  */
