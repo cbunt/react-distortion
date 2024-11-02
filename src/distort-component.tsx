@@ -390,11 +390,15 @@ function _distortComponent<E extends RequiredElementType = 'div'>({
         }
 
         const alternating = animation === 'alternating endless' || animation === 'alternating loop';
-        const steps = animation === 'loop' || animation === 'alternating loop' ? newFilter.steps : 2;
+        const endless = animation !== 'loop' && animation !== 'alternating loop';
+        const steps = !endless ? newFilter.steps : 2;
 
         const interval = setInterval(() => {
             if (alternating) setFilterProps((curr) => (curr === baseFilter ? newFilter : baseFilter));
-            setSeedOffset((curr) => (curr + 1) % steps);
+            setSeedOffset((curr) => {
+                if (endless && (curr & 1) !== 0) refreshSeed();
+                return (curr + 1) % steps;
+            });
         }, newFilter.animationInterval);
 
         return () => { clearInterval(interval); };
