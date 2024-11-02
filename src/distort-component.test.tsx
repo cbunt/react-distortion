@@ -149,6 +149,12 @@ describe('filter states', () => {
         const style = window.getComputedStyle(child as Element);
         expect(style.filter).toMatch(filterRx);
     });
+
+    test('filterId', () => {
+        const elm = getDistort({ filterId: 'distortion' });
+        const filter = elm.querySelector('[id="distortion"]');
+        expect(filter).not.toBe(null);
+    });
 });
 
 describe('seed changes', () => {

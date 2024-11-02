@@ -191,6 +191,11 @@ export type DistortOptions<E extends RequiredElementType = 'div'> = {
      */
     baseSeed?: number,
     /**
+     * A CSS ID to use for the distortion filter.
+     * @defaultValue `useId()`
+     */
+    filterId?: string,
+    /**
      * Minimum milliseconds between seed refreshes.
      * @defaultValue `100`
      */
@@ -351,6 +356,7 @@ const defaultProps = {
 } as const satisfies Required<DistortFilterOptions>;
 
 function _distortComponent<E extends RequiredElementType = 'div'>({
+    filterId = useId(),
     getDistortionSeed = () => Math.random() * (2 ** 16) | 0,
     minRefresh = 100,
     as,
@@ -372,7 +378,6 @@ function _distortComponent<E extends RequiredElementType = 'div'>({
     ...rest
 }: Substitute<ComponentProps<E>, DistortOptions<E>>, ref: Ref<DistortHandle>) {
     const As = as ?? 'div';
-    const filterId = useId();
     const filter = `url(#${filterId})`;
     const finalStyle = useMemo(() => joinFilterToStyle(filter, style), [filter, style]);
     const seedTime = useRef(Date.now());
