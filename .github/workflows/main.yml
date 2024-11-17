@@ -4,24 +4,25 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches: [main]
+  pull_request_target:
+    branches:
+      - main
 
 jobs:
   Jest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          package_json_file: 'package.json'
-      - name: Node Setup
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: 'package.json'
-      - name: Run Jest tests
-        uses: ArtiomTr/jest-coverage-report-action@v2
-        with:
-          package-manager: pnpm
-          test-script: "pnpm test --"
+    - uses: actions/checkout@v4
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        package_json_file: 'package.json'
+    - name: Node Setup
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: 'package.json'
+    - name: Run Jest tests
+      uses: ArtiomTr/jest-coverage-report-action@v2
+      with:
+        package-manager: pnpm
+        test-script: "pnpm test --"
