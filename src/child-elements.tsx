@@ -15,8 +15,8 @@
  * @module
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { DistortOptions } from './distort-component';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+import type { DistortOptions } from './distort-component';
 import styles from './child-elements.module.css';
 
 /**
