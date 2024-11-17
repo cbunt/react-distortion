@@ -25,19 +25,20 @@ const TestComp = forwardRef(function TestCompt({
         check: () => true,
     }), []);
 
+    // eslint-disable-next-line jest/no-standalone-expect
     expect(baseSeed).toBeUndefined();
     return <div {...rest} ref={undefined} id="dummy" />;
 });
 
 describe('filter states', () => {
     test('disable', () => {
-        const elm = getDistort({ hoverFilter: { disable: true } });
+        const elm = getDistort({ defaultFilter: { disable: true }, hoverFilter: { disable: false } });
         let style = window.getComputedStyle(elm);
-        expect(style.filter).toMatch(filterRx);
+        expect(style.filter).toBe('');
 
         fireEvent.mouseEnter(elm);
         style = window.getComputedStyle(elm);
-        expect(style.filter).toBe('');
+        expect(style.filter).toMatch(filterRx);
     });
 
     test('distortChildren', () => {
@@ -273,6 +274,9 @@ describe('seed changes', () => {
 
         act(() => { jest.advanceTimersByTime(1); });
         expect(feTurbulence?.getAttribute('seed')).toBe('1');
+
+        const style = window.getComputedStyle(elm);
+        expect(style.filter).toBe('');
     });
 
     test('resetSeed', () => {
@@ -311,7 +315,7 @@ describe('seed changes', () => {
                 animationJitter: 1,
             },
             hoverFilter: {
-                animationJitter: () => 1,
+                animationJitter: () => 2,
             },
             baseSeed: 0,
         });
@@ -326,6 +330,9 @@ describe('seed changes', () => {
         expect(feTurbulence?.getAttribute('seed')).toBe('1');
 
         fireEvent.mouseEnter(elm);
+        act(() => { jest.advanceTimersByTime(1); });
+        expect(feTurbulence?.getAttribute('seed')).toBe('0');
+
         act(() => { jest.advanceTimersByTime(1); });
         expect(feTurbulence?.getAttribute('seed')).toBe('0');
 
@@ -412,7 +419,7 @@ describe('prop pass through', () => {
     });
 
     test('forwardRef', () => {
-        const ref: { current: TestHandle | null } = { current: null };
+        const ref: Ref<TestHandle> = { current: null };
         render(<DistortComponent as={TestComp} forwardedRef={ref} />);
         expect(ref.current?.check()).toBeTruthy();
     });
