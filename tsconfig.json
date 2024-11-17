@@ -13,9 +13,10 @@
     "include": [
         "src/**/*.ts",
         "src/**/*.tsx",
+        "src/**/*.test.tsx",
+        "src/**/*.testd.tsx",
         "examples/**/*.ts",
         "examples/**/*.tsx",
-        "src/distort-component.test.tsx"
     ],
     "exclude": [
         "node_modules/**",

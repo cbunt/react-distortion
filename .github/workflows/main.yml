@@ -49,3 +49,21 @@ jobs:
     - uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Regenerate README
+  Types:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        package_json_file: 'package.json'
+    - name: Node Setup
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: 'package.json'
+    - name: Build Docs
+      run: |
+        pnpm install
+        pnpm tsc --noEmit
