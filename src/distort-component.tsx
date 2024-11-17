@@ -355,8 +355,8 @@ const defaultProps = {
     steps: 5,
 } as const satisfies Required<DistortFilterOptions>;
 
-function _distortComponent<E extends RequiredElementType = 'div'>({
-    filterId = useId(),
+function DistortComponentInternal<E extends RequiredElementType = 'div'>({
+    filterId: overrideId,
     getDistortionSeed = () => Math.random() * (2 ** 16) | 0,
     minRefresh = 100,
     as,
@@ -378,6 +378,8 @@ function _distortComponent<E extends RequiredElementType = 'div'>({
     ...rest
 }: Substitute<ComponentProps<E>, DistortOptions<E>>, ref: Ref<DistortHandle>) {
     const As = as ?? 'div';
+    const fallbackId = useId();
+    const filterId = overrideId ?? fallbackId;
     const filter = `url(#${filterId})`;
     const finalStyle = useMemo(() => joinFilterToStyle(filter, style), [filter, style]);
     const seedTime = useRef(Date.now());
@@ -542,8 +544,8 @@ function _distortComponent<E extends RequiredElementType = 'div'>({
  *
  * @category Component
  */
-const DistortComponent = forwardRef(_distortComponent) as <E extends RequiredElementType = 'div'>(
+const DistortComponent = forwardRef(DistortComponentInternal) as <E extends RequiredElementType = 'div'>(
     props: Substitute<ComponentProps<E>, DistortOptions<E>>,
-) => ReturnType<typeof _distortComponent<E>>;
+) => ReturnType<typeof DistortComponentInternal<E>>;
 
 export default DistortComponent;
