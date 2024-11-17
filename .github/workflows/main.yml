@@ -24,8 +24,6 @@ jobs:
         run: |
           pnpm install 
       - name: Run Jest tests
-        uses: willcaul/jest-github-action@v1.0.2  
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ArtiomTr/jest-coverage-report-action@v2
         with:
-          test-command: "pnpm test"
+          test-script: "pnpm test"
