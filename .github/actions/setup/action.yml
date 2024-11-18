@@ -1,4 +1,5 @@
 name: 'setup'
+shell: bash
 runs:
   using: "composite"
   steps:
