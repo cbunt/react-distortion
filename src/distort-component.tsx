@@ -22,6 +22,7 @@ import {
     ElementType,
     ReactElement,
     ReactHTML,
+    ReactNode,
     Ref,
     cloneElement,
     forwardRef,
@@ -89,7 +90,8 @@ export type Substitute<Other extends object, Base extends object> = {
 } & Base;
 
 /**
- * HTML elements that don't accept children.
+ * HTML elements that don't accept children, as defined by the
+ * {@link https://html.spec.whatwg.org/multipage/syntax.html#elements-2 | HTML spec}.
  * @category Utility Types
  */
 export type ChildlessHTMLElements =
@@ -123,11 +125,11 @@ export type ChildlessHTMLElements =
     | 'wbr';
 
 /**
- * A restricted ElementType which doesn't accept intrinsics that can't render children.
+ * ReactHTML elements that accept children, as defined by the
+ * {@link https://html.spec.whatwg.org/multipage/syntax.html#elements-2 | HTML spec}.
  * @category Utility Types
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type RequiredElementType = ElementType<any, keyof Omit<ReactHTML, ChildlessHTMLElements>>;
+export type NormalHTMLElements = keyof Omit<ReactHTML, ChildlessHTMLElements>;
 
 /**
  * Options for {@link DistortComponent}.
@@ -145,11 +147,11 @@ export type RequiredElementType = ElementType<any, keyof Omit<ReactHTML, Childle
  *
  * @category Options
  */
-export type DistortOptions<E extends RequiredElementType = 'div'> = {
+export type DistortOptions<E extends ElementType = 'div'> = {
     /**
      * The react component for this to wrap.
      */
-    as?: E,
+    as?: DistortSupportedAs<E>,
     /**
      * The default distortion filter settings for the element.
      *
@@ -229,8 +231,41 @@ export type DistortOptions<E extends RequiredElementType = 'div'> = {
     /**
     * A {@link Ref} to pass to the wrapped component.
     */
-    forwardedRef?: Ref<ElementRef<E>>,
+    forwardedRef?: Ref<ElementRef<DistortSupportedAs<E>>>,
 };
+
+/**
+ * Properties which a provided 'as' component must support
+ *
+ * @remarks
+ * DistortComponent works by passing additional style and children
+ * to the wrapped component, and will break if they are not supported.
+ * For example `<DistortComponent as="input" />` would throw a runtime
+ * error, as `input` elements cannot have children.
+ *
+ * @category Options
+ */
+export type DistortRequiredAsProps = {
+    children?: ReactNode,
+    style?: CSSProperties,
+};
+
+/**
+ * A wrapper which checks the passed type is a component which supports
+ * {@link DistortRequiredAsProps}. Returns `never` if it does not.
+ *
+ * @typeParam T - The component type to check. Inferred from {@link DistortOptions.as as}.
+ *
+ * @category Options
+ */
+export type DistortSupportedAs<T> =
+    T extends NormalHTMLElements
+        ? T
+        : T extends ElementType<infer P>
+            ? P extends DistortRequiredAsProps
+                ? T
+                : never
+            : never;
 
 /**
  * Options for applied filters and animations.
@@ -355,7 +390,7 @@ const defaultProps = {
     steps: 5,
 } as const satisfies Required<DistortFilterOptions>;
 
-function DistortComponentInternal<E extends RequiredElementType = 'div'>({
+function DistortComponentInternal<E extends ElementType = 'div'>({
     filterId: overrideId,
     getDistortionSeed = () => Math.random() * (2 ** 16) | 0,
     minRefresh = 100,
@@ -544,7 +579,7 @@ function DistortComponentInternal<E extends RequiredElementType = 'div'>({
  *
  * @category Component
  */
-const DistortComponent = forwardRef(DistortComponentInternal) as <E extends RequiredElementType = 'div'>(
+const DistortComponent = forwardRef(DistortComponentInternal) as <E extends ElementType = 'div'>(
     props: Substitute<ComponentProps<E>, DistortOptions<E>>,
 ) => ReturnType<typeof DistortComponentInternal<E>>;
 
