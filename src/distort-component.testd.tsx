@@ -18,8 +18,11 @@ import DistortComponent from './distort-component';
 // @ts-expect-error should only allow properties supported by 'as'
 <DistortComponent as="div" href="./" />;
 
-// @ts-expect-error 'as' should accept custom Components that require additional props
+// @ts-expect-error 'as' should accept custom Components that require missing props
 <DistortComponent as={(props: { children?: ReactNode, style?: CSSProperties, a: number }) => <div {...props} />} />;
+
+// 'as' should accept custom Components that require provided props
+<DistortComponent a={1} as={(props: { children?: ReactNode, style?: CSSProperties, a: number }) => <div {...props} />} />;
 
 // should allow properties supported by 'as'
 <DistortComponent as="a" href="./" />;
