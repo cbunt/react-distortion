@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Jest:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: write
+    steps:
+    - uses: ./.github/workflows/setup.yml
+    - name: Run Jest tests
+      uses: ArtiomTr/jest-coverage-report-action@v2
+      with:
+        package-manager: pnpm
+        test-script: "pnpm test --"
+
+  Readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: ./.github/workflows/setup.yml
+    - name: Build Docs
+      run: |
+        pnpm run docs
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: Regenerate README
+
+  Types:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: ./.github/workflows/setup.yml
+    - uses: andoshin11/typescript-error-reporter-action@v1.0.2
