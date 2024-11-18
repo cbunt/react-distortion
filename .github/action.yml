@@ -1,5 +1,4 @@
-name: 'setup jobs'
-description: 'Greet someone'
+name: 'setup'
 runs:
   using: "composite"
   steps:
