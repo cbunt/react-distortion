@@ -22,7 +22,7 @@ Component that distorts itself and its children.
 
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
-| `E` *extends* [`RequiredElementType`](#requiredelementtype) | `"div"` | The base component type; inferred from [as](#as). |
+| `E` *extends* [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L89) | `"div"` | The base component type; inferred from [as](#as). |
 
 #### Parameters
 
@@ -47,13 +47,13 @@ Options for [DistortComponent](#distortcomponent).
 
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
-| `E` *extends* [`RequiredElementType`](#requiredelementtype) | `"div"` | The base component type. Inferred from [as](#as). |
+| `E` *extends* [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L89) | `"div"` | The base component type. Inferred from [as](#as). |
 
 #### Type declaration
 
 | Name | Type | Description |
 | ------ | ------ | ------ |
-| `as`? | `E` | The react component for this to wrap. |
+| `as`? | [`DistortSupportedAs`](#distortsupportedast)\<`E`\> | The react component for this to wrap. |
 | `defaultFilter`? | [`DistortFilterOptions`](#distortfilteroptions) | The default distortion filter settings for the element. <br><br>**Remarks**<br> Undefined properties are replaced with their default values. |
 | `hoverFilter`? | \`$\{DistortAnimation\}\` \| [`DistortFilterOptions`](#distortfilteroptions) | Distortion filter settings while the element is hovered. |
 | `activeFilter`? | \`$\{DistortAnimation\}\` \| [`DistortFilterOptions`](#distortfilteroptions) | Distortion filter settings while the element is active. |
@@ -64,7 +64,7 @@ Options for [DistortComponent](#distortcomponent).
 | `getDistortionSeed`? | () => `number` | A function returning an integer to pass to feTurbulence's seed |
 | `distortChildren`? | [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L89)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \} & `Partial`\<`Record`\<`PropertyKey`, `unknown`\>\>\> \| [`ReactElement`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L328)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \}\> \| [`ReactElement`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L328)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \}\>[] | Child elements that are distorted even when [disable](#disable) = true. <br><br>**Remarks**<br> Useful for distorted elements of components which should otherwise remain legible, such as a distorted border on a text area. If given ReactElements, children are cloned via `React.cloneElement`, with the distortion filter added to `style.filter`. If passed as a Component, it's created as `<distortChildren style={{ filter }} />`. |
 | `ref`? | [`Ref`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190)\<[`DistortHandle`](#distorthandle)\> | Component's imperative handle. |
-| `forwardedRef`? | [`Ref`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190)\<[`ElementRef`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L222)\<`E`\>\> | A [Ref](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190) to pass to the wrapped component. |
+| `forwardedRef`? | [`Ref`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190)\<[`ElementRef`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L222)\<[`DistortSupportedAs`](#distortsupportedast)\<`E`\>\>\> | A [Ref](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190) to pass to the wrapped component. |
 
 #### Remarks
 
@@ -75,6 +75,39 @@ Any missing properties of filters will be inherited from [defaultFilter](#defaul
 expect for [disable](#disable), which always defaults to `false`.
 
 Non-default filters can also be just an animation, as a shorthand for `filter: { animation: "..." }`.
+
+***
+
+### DistortRequiredAsProps
+
+Properties which a provided 'as' component must support
+
+#### Type declaration
+
+| Name | Type |
+| ------ | ------ |
+| `children`? | [`ReactNode`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L479) |
+| `style`? | [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586) |
+
+#### Remarks
+
+DistortComponent works by passing additional style and children
+to the wrapped component, and will break if they are not supported.
+For example `<DistortComponent as="input" />` would throw a runtime
+error, as `input` elements cannot have children.
+
+***
+
+### DistortSupportedAs\<T\>
+
+A wrapper which checks the passed type is a component which supports
+[DistortRequiredAsProps](#distortrequiredasprops). Returns `never` if it does not.
+
+#### Type Parameters
+
+| Type Parameter | Description |
+| ------ | ------ |
+| `T` | The component type to check. Inferred from [as](#as). |
 
 ***
 
@@ -148,13 +181,15 @@ taking precedence.
 
 ### ChildlessHTMLElements
 
-HTML elements that don't accept children.
+HTML elements that don't accept children, as defined by the
+[HTML spec](https://html.spec.whatwg.org/multipage/syntax.html#elements-2).
 
 ***
 
-### RequiredElementType
+### NormalHTMLElements
 
-A restricted ElementType which doesn't accept intrinsics that can't render children.
+ReactHTML elements that accept children, as defined by the
+[HTML spec](https://html.spec.whatwg.org/multipage/syntax.html#elements-2).
 
 ## child-elements
 
