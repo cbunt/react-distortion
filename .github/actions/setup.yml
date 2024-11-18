@@ -1,0 +1,16 @@
+name: 'setup jobs'
+description: 'Greet someone'
+runs:
+  using: "composite"
+  steps:
+  - name: Install pnpm
+    uses: pnpm/action-setup@v4
+    with:
+      package_json_file: 'package.json'
+  - name: Node Setup
+    uses: actions/setup-node@v4
+    with:
+      node-version-file: 'package.json'
+  - name: Install repo
+    run: |
+      pnpm install

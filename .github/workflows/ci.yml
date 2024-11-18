@@ -14,7 +14,8 @@ jobs:
       pull-requests: write
       contents: write
     steps:
-    - uses: ./.github/workflows/setup.yml
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/setup
     - name: Run Jest tests
       uses: ArtiomTr/jest-coverage-report-action@v2
       with:
@@ -26,7 +27,8 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: ./.github/workflows/setup.yml
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/setup
     - name: Build Docs
       run: |
         pnpm run docs
@@ -39,5 +41,6 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: ./.github/workflows/setup.yml
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/setup
     - uses: andoshin11/typescript-error-reporter-action@v1.0.2
