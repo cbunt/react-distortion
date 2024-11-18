@@ -2,15 +2,9 @@ name: 'setup'
 runs:
   using: "composite"
   steps:
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        package_json_file: 'package.json'
-    - name: Node Setup
-      uses: actions/setup-node@v4
+    - uses: actions/setup-node@v4
       with:
         node-version-file: 'package.json'
-    - name: Install repo
-      shell: bash
-      run: |
-        pnpm install
+    - uses: pnpm/action-setup@v4
+      with:
+        run_install: true
