@@ -3,42 +3,43 @@
 /** @type {Partial<import('typedoc').TypeDocOptions>} */
 const baseConfig = {
     entryPoints: [
-        "../src/distort-component.tsx",
-        "../src/child-elements.tsx"
+        '../src/distort-component.tsx',
+        '../src/child-elements.tsx'
     ],
     plugin: [
-        "typedoc-plugin-dt-links",
-        "typedoc-plugin-merge-modules",
-        "typedoc-plugin-markdown",
-        "./typedoc-minimal-theme.js",
+        'typedoc-plugin-dt-links',
+        'typedoc-plugin-merge-modules',
+        'typedoc-plugin-markdown',
+        './typedoc-minimal-theme.js',
     ],
-    theme: "minimal",
-    out: "..",
+    tsconfig: './tsconfig.json',
+    theme: 'minimal',
+    out: '..',
     cleanOutputDir: false,
     disableSources: true,
     basePath: '..',
     sort: [
-        "source-order"
+        'source-order'
     ],
     navigation: {
-        "includeCategories": true,
-        "includeGroups": false,
-        "includeFolders": false
+        'includeCategories': true,
+        'includeGroups': false,
+        'includeFolders': false
     },
     categoryOrder: [
-        "Component",
-        "Options",
-        "Utility Types",
-        "child-elements"
+        'Component',
+        'Options',
+        'Utility Types',
+        'child-elements'
     ],
 }
 
 /** @type {Partial<import('typedoc-plugin-markdown').PluginOptions>} */
 const markdownConfig = {
-    outputFileStrategy: "modules",
-    typeDeclarationFormat: "table",
-    parametersFormat: "table",
-    enumMembersFormat: "table",
+    outputFileStrategy: 'modules',
+    typeDeclarationFormat: 'table',
+    parametersFormat: 'table',
+    enumMembersFormat: 'table',
     hidePageHeader: true,
     flattenOutputFiles: true,
     expandObjects: true,
