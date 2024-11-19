@@ -22,6 +22,15 @@ jobs:
       - name: Build Package
         run: pnpm build
 
+      - name: Configure Git Identity
+        uses: oleksiyrudenko/gha-git-credentials@v2.1.2
+        with:
+          global: true
+          name: '${{ github.actor }}'
+          email: '${{ github.actor }}@users.noreply.github.com'
+          actor: '${{ github.actor }}'
+          token: '${{ secrets.GITHUB_TOKEN }}'
+
       - name: Bump Version
         run: pnpm version ${{ inputs.version }}
 
