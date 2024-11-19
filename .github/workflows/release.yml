@@ -22,9 +22,6 @@ jobs:
       - name: Build Package
         run: pnpm build
 
-      - name: Bump Version
-        run: pnpm version ${{ inputs.version }}
-
       - name: Get Changes
         id: changes
         uses: mindsers/changelog-reader-action@v2
