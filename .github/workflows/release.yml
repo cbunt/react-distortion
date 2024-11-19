@@ -70,7 +70,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to npm 
-        run: pnpm publish
-        if: ${{ !inputs.dry }}
+        run: pnpm publish ${{ inputs.dry && '--dry-run' || '' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
