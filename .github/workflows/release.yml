@@ -60,6 +60,10 @@ jobs:
           tagging_message: 'v${{ steps.bump_version.outputs.version }}'
           commit_message: 'chore: v${{ steps.bump_version.outputs.version }}'
 
+      - name: Stash Dry
+        if: ${{ inputs.dry }}
+        run: git stash
+
       - name: Create Release
         uses: ncipollo/release-action@v1
         if: ${{ !inputs.dry }}
