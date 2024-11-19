@@ -22,15 +22,6 @@ jobs:
       - name: Build Package
         run: pnpm build
 
-      - name: Configure Git Identity
-        uses: oleksiyrudenko/gha-git-credentials@v2.1.2
-        with:
-          global: true
-          name: '${{ github.actor }}'
-          email: '${{ github.actor }}@users.noreply.github.com'
-          actor: '${{ github.actor }}'
-          token: '${{ secrets.GITHUB_TOKEN }}'
-
       - name: Bump Version
         run: pnpm version ${{ inputs.version }}
 
@@ -50,16 +41,20 @@ jobs:
       - name: Build Readme
         run:  pnpm run docs
 
+      - name: Bump Version
+        run: pnpm version --no-git-tag-version ${{ inputs.version }}
+
       # - name: Commit Updates
       #   uses: stefanzweifel/git-auto-commit-action@v5
       #   with:
-      #     commit_message: "chore: ${{ inputs.version }}"
+      #     tagging_message: 'v${{ inputs.version}}'
+      #     commit_message: 'chore: v${{ inputs.version }}'
 
       # - name: Create Release
       #   uses: ncipollo/release-action@v1
       #   with:
-      #     tag: v${{ inputs.version }}
-      #     name: Release v${{ inputs.version }}
+      #     tag: 'v${{ inputs.version }}'
+      #     name: 'Release v${{ inputs.version }}'
       #     body: ${{ steps.changes.outputs.changes }}
       #     token: ${{ secrets.GITHUB_TOKEN }}
 
