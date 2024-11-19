@@ -29,5 +29,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - name: Type tests
-        run: pnpm tsc --noEmit
+      - name: Run Test Types
+        run: pnpm test-types
