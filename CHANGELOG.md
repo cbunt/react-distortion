@@ -41,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2024-10-25
 ### BREAKING CHANGES
 -   More robust typing of `DistortionOptions`, requiring `as` intrinsic elements to support children.
+    This is only a breaking change for Typescript, and only prevents things that previously
+    would cause runtime errors.
 
 ### Fixes
 -   Moved @types/react to peer dependencies.
