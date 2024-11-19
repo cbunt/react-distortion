@@ -9,7 +9,7 @@
     "docs-watch": "rimraf README.md && pnpm typedoc --watch",
     "start": "ladle serve",
     "test": "jest",
-    "test-types": "tsc --notEmit"
+    "test-types": "tsc --noEmit"
   },
   "keywords": [
     "react",
