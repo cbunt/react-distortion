@@ -22,20 +22,6 @@ jobs:
           package-manager: pnpm
           test-script: "pnpm test --"
 
-  Readme:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - name: Build Docs
-        run: |
-          pnpm run docs
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: Regenerate README
-
   Types:
     runs-on: ubuntu-latest
     permissions:
