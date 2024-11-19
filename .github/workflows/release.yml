@@ -3,10 +3,14 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version for release'
+      type:
+        description: 'Version type of release'
         required: true
-        type: string
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
 
 jobs:
   CI:
@@ -29,29 +33,32 @@ jobs:
           version: Unreleased
           validation_level: warn
 
+      - name: Bump Version
+        id: bump_version
+        run: |
+          version=$(pnpm version --no-git-tag-version ${{ inputs.type }})
+          echo "version=${version//v}" >> $GITHUB_OUTPUT
+
       - name: Update Changelog
         uses: superfaceai/release-changelog-action@v2
         with:
-          version: ${{ inputs.version }}
+          version: ${{ steps.bump_version.outputs.version }}
           operation: release
 
       - name: Build Readme
         run:  pnpm run docs
 
-      - name: Bump Version
-        run: pnpm version --no-git-tag-version ${{ inputs.version }}
-
       # - name: Commit Updates
       #   uses: stefanzweifel/git-auto-commit-action@v5
       #   with:
-      #     tagging_message: 'v${{ inputs.version}}'
-      #     commit_message: 'chore: v${{ inputs.version }}'
+      #     tagging_message: 'v${{ steps.bump_version.outputs.version }}'
+      #     commit_message: 'chore: v${{ steps.bump_version.outputs.version }}'
 
       # - name: Create Release
       #   uses: ncipollo/release-action@v1
       #   with:
-      #     tag: 'v${{ inputs.version }}'
-      #     name: 'Release v${{ inputs.version }}'
+      #     tag: 'v${{ steps.bump_version.outputs.version }}'
+      #     name: 'Release v${{ steps.bump_version.outputs.version }}'
       #     body: ${{ steps.changes.outputs.changes }}
       #     token: ${{ secrets.GITHUB_TOKEN }}
 
