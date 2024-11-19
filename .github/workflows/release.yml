@@ -3,10 +3,15 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
+      dry:
+        description: 'If the release workflow should be a dry run'
+        type: boolean
+        required: false
+        default: false
       type:
         description: 'Version type of release'
-        required: true
         type: choice
+        required: true
         options:
           - major
           - minor
@@ -48,6 +53,10 @@ jobs:
       - name: Build Readme
         run:  pnpm run docs
 
+      - name: Dry Test
+        if: ${{ !inputs.dry }}
+        run: echo "not dry!"
+
       # - name: Commit Updates
       #   uses: stefanzweifel/git-auto-commit-action@v5
       #   with:
@@ -66,4 +75,3 @@ jobs:
       #   run: pnpm publish
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
