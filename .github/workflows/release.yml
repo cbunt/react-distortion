@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version for release'
+        required: true
+        type: string
+
+jobs:
+  Run-CI:
+    uses: ./.github/workflows/ci.yml
+  Release:
+    runs-on: ubuntu-latest
+    needs: Run-CI
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+
+      # This is early in the pipeline in case it fails
+      - name: Build Package
+        run: pnpm build
+
+      - name: Get Changes
+        id: changes
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          version: Unreleased
+          validation_level: warn
+
+      - name: Update Changelog
+        uses: superfaceai/release-changelog-action@v2
+        with:
+          version: ${{ inputs.version }}
+          operation: release
+
+      - name: Build Readme
+        run:  pnpm run docs
+
+      - name: Bump Version
+        run: pnpm version ${{ inputs.version }}
+
+      # - name: Commit Updates
+      #   uses: stefanzweifel/git-auto-commit-action@v5
+      #   with:
+      #     commit_message: "chore: ${{ inputs.version }}"
+
+      # - name: Create Release
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     tag: v${{ inputs.version }}
+      #     name: Release v${{ inputs.version }}
+      #     body: ${{ steps.changes.outputs.changes }}
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Publish to npm 
+      #   run: pnpm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
