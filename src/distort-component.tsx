@@ -535,12 +535,7 @@ function DistortComponentInternal<E extends ElementType = 'div'>({
         >
             {children}
             {overlay}
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                version="1.1"
-                width="0"
-                height="0"
-            >
+            <svg style={{ width: 0, height: 0, position: 'absolute' }}>
                 <defs>
                     <filter id={filterId}>
                         <feTurbulence
