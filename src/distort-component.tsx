@@ -226,7 +226,7 @@ function DistortComponentInternal<E extends ElementType = 'div'>({
         ...style,
         [cssVariable]: filterURL,
         filter: [
-            style.filter as string,
+            (style as { filter?: string }).filter,
             disable ? '' : filterURL,
         ].join(' ').trim(),
     };

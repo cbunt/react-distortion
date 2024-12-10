@@ -32,15 +32,15 @@ export default [
             typescript({ tsconfig: './tsconfig.json' }),
         ],
     },
-    // {
-    //     input: {
-    //         'distort-component': 'src/distort-component.tsx',
-    //     },
-    //     external: ['react', 'react/jsx-runtime', 'react-dom'],
-    //     output: [{ 
-    //         dir: 'dist', 
-    //         entryFileNames: '[name].d.ts',
-    //     }],
-    //     plugins: [dts({ respectExternal: true })],
-    // }
+    {
+        input: {
+            'distort-component': 'src/distort-component.tsx',
+        },
+        external: ['react', 'react/jsx-runtime', 'react-dom'],
+        output: [{ 
+            dir: 'dist', 
+            entryFileNames: '[name].d.ts',
+        }],
+        plugins: [dts({ respectExternal: true })],
+    },
 ]
