@@ -53,11 +53,6 @@ jobs:
       - name: Build Readme
         run:  pnpm run docs
 
-      - name: Publish to npm 
-        run: pnpm publish ${{ inputs.dry && '--dry-run' || '' }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Commit Updates
         uses: stefanzweifel/git-auto-commit-action@v5
         if: ${{ !inputs.dry }}
@@ -68,6 +63,11 @@ jobs:
       - name: Stash Dry
         if: ${{ inputs.dry }}
         run: git stash
+
+      - name: Publish to npm 
+        run: pnpm publish ${{ inputs.dry && '--dry-run' || '' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create Release
         uses: ncipollo/release-action@v1
