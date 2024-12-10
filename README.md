@@ -1,7 +1,7 @@
 # react-distortion
 
 [![npm version](https://badge.fury.io/js/react-distortion.svg)](https://www.npmjs.com/package/react-distortion)
-[![react-distortion bundlejs size](https://deno.bundlejs.com/badge?q=react-distortion&badge=detailed)](https://bundlejs.com/?q=react-distortion)
+[![react-distortion bundlejs size](https://deno.bundlejs.com/badge?q=react-distortion&badge=detailed&config={"esbuild":{"external":["react","react-dom"]}})](https://bundlejs.com/?q=react-distortion&config={"esbuild":{"external":["react","react-dom"]}})
 
 A React component library for adding animated procedural distortion to other components.
 
