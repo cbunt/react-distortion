@@ -2,13 +2,17 @@
     "compilerOptions": {
         "outDir": "dist",
         "module": "esnext",
-        "target": "es6",
+        "target": "ESNext",
         "allowJs": false,
         "esModuleInterop": true,
         "jsx": "react-jsx",
         "strict": true,
         "moduleResolution": "node",
         "skipLibCheck": true,
+        "lib": [
+            "ESNext",
+            "DOM"
+        ]
     },
     "include": [
         "src/**/*.ts",

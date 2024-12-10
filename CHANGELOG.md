@@ -5,6 +5,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### BREAKING CHANGES
+- react-dom is now a required peer-dependency.
+- Removed 'distortChildren' prop.
+- Removed child-elements module.
+
+### Added
+- 'filtersEvents' prop for customizing DOM event transitions.
+- Filter SVGs now have 'aria-hidden="true"'.
+- A '--distortion-filter' css attribute container the distortion filter's url to
+  inline style.
+
+### Changed
+- Filter SVGs are now appended to document.body with createPortal while in use.
+- Internal state is now managed with useReducer.
+- 'as' components no longer need to support children.
 
 ## [1.4.1] - 2024-12-04
 ### Fixed

@@ -1,5 +1,5 @@
 import typescript from '@rollup/plugin-typescript';
-import css from 'rollup-plugin-postcss';
+import { babel } from '@rollup/plugin-babel';
 import dts from 'rollup-plugin-dts'
 
 /** @type {import('rollup').RollupOptions[]} */
@@ -8,7 +8,6 @@ export default [
         jsx: 'preserve-react',
         input: {
             'distort-component': 'src/distort-component.tsx',
-            'child-elements': 'src/child-elements.tsx',
         },
         output : [
                 {
@@ -23,25 +22,25 @@ export default [
                     format: 'esm',
                 }
         ],
-        external: ['react', 'react/jsx-runtime'],
+        external: ['react', 'react/jsx-runtime', 'react-dom'],
         plugins: [
+            babel({
+                babelHelpers: 'bundled',
+                presets: ["@babel/preset-env"],
+                extensions: ['.ts', '.tsx']
+             }),
             typescript({ tsconfig: './tsconfig.json' }),
-            css({
-                modules: true,
-                inject: true,
-            }),
-        ]
+        ],
     },
-    {
-        input: {
-            'distort-component': 'src/distort-component.tsx',
-            'child-elements': 'src/child-elements.tsx',
-        },
-        external: ['react', 'react/jsx-runtime'],
-        output: [{ 
-            dir: 'dist', 
-            entryFileNames: '[name].d.ts',
-        }],
-        plugins: [dts()],
-    }
+    // {
+    //     input: {
+    //         'distort-component': 'src/distort-component.tsx',
+    //     },
+    //     external: ['react', 'react/jsx-runtime', 'react-dom'],
+    //     output: [{ 
+    //         dir: 'dist', 
+    //         entryFileNames: '[name].d.ts',
+    //     }],
+    //     plugins: [dts({ respectExternal: true })],
+    // }
 ]

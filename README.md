@@ -22,13 +22,13 @@ Component that distorts itself and its children.
 
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
-| `E` *extends* [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L89) | `"div"` | The base component type; inferred from [as](#as). |
+| `E` *extends* [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L107) | `"div"` | The base component type; inferred from [as](#as). |
 
 #### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
-| `props` | [`Substitute`](#substituteother-base)\<[`ComponentProps`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L1660)\<`E`\>, [`DistortOptions`](#distortoptionse)\<`E`\>\> |
+| `props` | [`Substitute`](#substituteother-base)\<[`ComponentProps`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L1423)\<`E`\>, [`DistortOptions`](#distortoptionse)\<`E`\>\> |
 
 #### Remarks
 
@@ -47,24 +47,145 @@ Options for [DistortComponent](#distortcomponent).
 
 | Type Parameter | Default type | Description |
 | ------ | ------ | ------ |
-| `E` *extends* [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L89) | `"div"` | The base component type. Inferred from [as](#as). |
+| `E` *extends* [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L107) | `"div"` | The base component type. Inferred from [as](#as). |
 
 #### Type declaration
 
-| Name | Type | Description |
-| ------ | ------ | ------ |
-| `as`? | [`DistortSupportedAs`](#distortsupportedast)\<`E`\> | The react component for this to wrap. |
-| `defaultFilter`? | [`DistortFilterOptions`](#distortfilteroptions) | The default distortion filter settings for the element. <br><br>**Remarks**<br> Undefined properties are replaced with their default values. |
-| `hoverFilter`? | \`$\{DistortAnimation\}\` \| [`DistortFilterOptions`](#distortfilteroptions) | Distortion filter settings while the element is hovered. |
-| `activeFilter`? | \`$\{DistortAnimation\}\` \| [`DistortFilterOptions`](#distortfilteroptions) | Distortion filter settings while the element is active. |
-| `focusFilter`? | \`$\{DistortAnimation\}\` \| [`DistortFilterOptions`](#distortfilteroptions) | Distortion filter settings while the element is focused. |
-| `baseSeed`? | `number` | Starting [seed](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/seed) for the feTurbulence noise filter. <br><br>**Remarks**<br> Loop animations increment from this value, while endless animations reset it. Entering a state with `resetSeed = true` will return to it. |
-| `filterId`? | `string` | A CSS ID to use for the distortion filter. |
-| `minRefresh`? | `number` | Minimum milliseconds between seed refreshes. |
-| `getDistortionSeed`? | () => `number` | A function returning an integer to pass to feTurbulence's seed |
-| `distortChildren`? | [`ElementType`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L89)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \} & `Partial`\<`Record`\<`PropertyKey`, `unknown`\>\>\> \| [`ReactElement`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L328)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \}\> \| [`ReactElement`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L328)\<\{`style`: [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586); \}\>[] | Child elements that are distorted even when [disable](#disable) = true. <br><br>**Remarks**<br> Useful for distorted elements of components which should otherwise remain legible, such as a distorted border on a text area. If given ReactElements, children are cloned via `React.cloneElement`, with the distortion filter added to `style.filter`. If passed as a Component, it's created as `<distortChildren style={{ filter }} />`. |
-| `ref`? | [`Ref`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190)\<[`DistortHandle`](#distorthandle)\> | Component's imperative handle. |
-| `forwardedRef`? | [`Ref`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190)\<[`ElementRef`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L222)\<[`DistortSupportedAs`](#distortsupportedast)\<`E`\>\>\> | A [Ref](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L190) to pass to the wrapped component. |
+##### as?
+
+The react component for this to wrap.
+
+###### Default Value
+
+```ts
+'div'
+```
+
+##### baseSeed?
+
+Starting [seed](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/seed)
+for the feTurbulence noise filter.
+
+###### Remarks
+
+Loop animations increment from this value, while endless animations
+reset it. Entering a state with `resetSeed = true` will return to it.
+
+##### cssVariable?
+
+Name for the css variable to access the distortion filter.
+
+###### Default Value
+
+```ts
+`--distortion-filter`
+```
+
+###### Remarks
+
+Used as: `filter: var(--${cssVariable})`.
+
+##### filterId?
+
+A CSS ID to use for the distortion filter.
+
+###### Default Value
+
+[useId()](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L1889)
+
+##### minRefresh?
+
+Minimum milliseconds between seed refreshes.
+
+###### Default Value
+
+```ts
+100
+```
+
+##### getDistortionSeed()?
+
+A function returning an integer to pass to feTurbulence's seed
+
+###### Default Value
+
+```ts
+() => Math.random() * (2 ** 16) | 0;
+```
+
+##### defaultFilter?
+
+The default distortion filter settings for the element.
+
+###### Remarks
+
+Undefined properties are replaced with their default values.
+
+###### Default Value
+
+```ts
+{
+  baseFrequency: 0.015,
+  disable: false,
+  numOctaves: 3,
+  resetSeed: false,
+  scale: 5,
+}
+```
+
+##### hoverFilter?
+
+Distortion filter settings while the element is hovered.
+
+##### activeFilter?
+
+Distortion filter settings while the element is active.
+
+##### focusFilter?
+
+Distortion filter settings while the element is focused.
+
+##### domStates?
+
+Filters and the DOM events associated with them, in ascending order of precedence.
+
+###### Default Value
+
+```ts
+[
+  {
+    prop: 'hoverFilter',
+    onMouseEnter: true,
+    onMouseLeave: false,
+  },
+  {
+    prop: 'focusFilter',
+    onFocus: true,
+    onBlur: false,
+  },
+  {
+    prop: 'activeFilter',
+    onMouseDown: true,
+    onMouseUp: false,
+  }
+]
+```
+
+###### Remarks
+
+Handlers for all DOM events defined in this prop are passed to the wrapped component.
+As such, the component should accept props from them, even though the typing of
+DistortComponent does not required that.
+
+There is a maximum of 32 states supported, with any additional states being ignored.
+
+##### ref?
+
+Component's imperative handle.
+
+##### forwardedRef?
+
+A [Ref](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L192) to pass to the wrapped component.
 
 #### Remarks
 
@@ -74,8 +195,6 @@ Undefined filters are skipped
 Any missing properties of filters will be inherited from [defaultFilter](#defaultfilter),
 expect for [disable](#disable), which always defaults to `false`.
 
-Non-default filters can also be just an animation, as a shorthand for `filter: { animation: "..." }`.
-
 ***
 
 ### DistortRequiredAsProps
@@ -84,10 +203,7 @@ Properties which a provided 'as' component must support
 
 #### Type declaration
 
-| Name | Type |
-| ------ | ------ |
-| `children`? | [`ReactNode`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L479) |
-| `style`? | [`CSSProperties`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2586) |
+##### style?
 
 #### Remarks
 
@@ -100,7 +216,7 @@ error, as `input` elements cannot have children.
 
 ### DistortSupportedAs\<T\>
 
-A wrapper which checks the passed type is a component which supports
+A wrapper which checks the passed type is a component which accepts
 [DistortRequiredAsProps](#distortrequiredasprops). Returns `never` if it does not.
 
 #### Type Parameters
@@ -117,38 +233,84 @@ Options for applied filters and animations.
 
 #### Type declaration
 
-| Name | Type | Description |
-| ------ | ------ | ------ |
-| `animation`? | \`$\{DistortAnimation\}\` | The animation behavior of the distortion. |
-| `animationInterval`? | `number` | The milliseconds between animation seed changes. Unused when [animation](#animation) = 'static'. |
-| `animationJitter`? | `number` \| () => `number` | Milliseconds to randomly vary animationInterval by, or a function that returns that value. |
-| `baseFrequency`? | `number` | The feTurbulence noise filter's [base frequency](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence). |
-| `disable`? | `boolean` | Disables the filter. |
-| `numOctaves`? | `number` | The feTurbulence noise filter's [number of octaves](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/numOctaves). |
-| `resetSeed`? | `boolean` | If the seed should be set to baseSeed upon entering this state. <br><br>**Remarks**<br> Allows returning to deterministic sequences after random animations. Ignored if baseSeed is undefined. |
-| `scale`? | `number` | The feDisplacementMap's [scale](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/scale). |
-| `steps`? | `number` | The number of seed increments before returning to the start for loop animations. |
+##### animationInterval?
+
+The milliseconds between animation seed changes.
+
+###### Remarks
+
+If undefined, the distortion is static.
+
+If any other animation property--[animationJitter](#animationjitter),
+[steps](#steps), or [DistortFilterOptions.alternate](#alternate)--
+are defined, this is set to `400`.
+
+##### animationJitter?
+
+Milliseconds to randomly vary animationInterval by, or a function
+that returns that value.
+
+##### baseFrequency?
+
+The feTurbulence noise filter's
+[base frequency](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence).
+
+##### disable?
+
+Disables the filter.
+
+##### numOctaves?
+
+The feTurbulence noise filter's
+[number of octaves](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/numOctaves).
+
+##### resetSeed?
+
+If the seed should be set to baseSeed upon entering this state.
+
+###### Remarks
+
+Allows returning to deterministic sequences after random animations.
+
+Ignored if baseSeed is undefined.
+
+##### scale?
+
+The feDisplacementMap's
+[scale](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/scale).
+
+##### steps?
+
+The number of seed increments before returning to the start
+for loop animations. If undefined, the animation never loops.
+
+##### alternate?
+
+Filter options to use on odd animation steps.
+
+###### Remarks
+
+If true, all values are taken from [defaultFilter](#defaultfilter).
+
+Undefined values don't alternate.
 
 ***
 
-### DistortAnimation
+### DistortDOMState
 
-ReactDistortion animation types.
+A filter and the DOM events associated with it.
 
 #### Remarks
 
-This enum is provided for convenience and documentation,
-but the values may also be passed as strings.
+Filters can either be explicitly defined or reference one of the built in prop filters.
+Filters which reference to an undefined prop are ignored.
 
-#### Enumeration Members
+DOM events are specified as `key: boolean` pairs, where 'true' means the state is entered
+on the given event, and 'false'. If multiple states specify the same event, the highest
+precedence state overrides all previous ones.
 
-| Enumeration Member | Value | Description |
-| ------ | ------ | ------ |
-| `Static` | `"static"` | Filter is applied without animation. |
-| `Endless` | `"endless"` | Seed is refreshed every [animationInterval](#animationinterval) milliseconds. |
-| `Loop` | `"loop"` | Seed is incremented every [animationInterval](#animationinterval) milliseconds, looping back to the original value after the given number of steps. |
-| `AlternatingEndless` | `"alternating endless"` | Seed is refreshed every [animationInterval](#animationinterval) milliseconds while alternating between the given filter settings and the base filter. |
-| `AlternatingLoop` | `"alternating loop"` | Seed is incremented every [animationInterval](#animationinterval) milliseconds while alternating between the given filter settings and the base filter, looping back to the original seed after the given number of steps. |
+Typing allows explicitly setting events as undefined, e.g. 'onFocus: undefined',
+which is evaluated identically to 'onFocus: false'.
 
 ***
 
@@ -158,17 +320,28 @@ but the values may also be passed as strings.
 
 #### Type declaration
 
-| Name | Type | Description |
+##### refreshSeed()
+
+Refreshes the filter seed.
+
+###### Parameters
+
+| Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `refreshSeed` | (`seed`?) => `void` | Refreshes the filter seed. <br><br>**Remarks**<br> Useful for situational animations, such as animating a range on input. Ignored if the last seed refresh was less than [minRefresh](#minrefresh) milliseconds ago, including automatic animation seed refreshes. |
+| `seed`? | `number` | A value to set the seed to. If undefined uses [getDistortionSeed](#getdistortionseed). |
+
+###### Remarks
+
+Useful for situational animations, such as animating a range on input.
+
+Ignored if the last seed refresh was less than [minRefresh](#minrefresh)
+milliseconds ago, including automatic animation seed refreshes.
 
 ## Utility Types
 
 ### Substitute\<Other, Base\>
 
-A more robust version of `Omit<Other, keyof Base> & Base`,
-giving the intersection of Other & Base with Base's properties
-taking precedence.
+The intersection of Other & Base, with Base's properties taking precedence.
 
 #### Type Parameters
 
@@ -179,70 +352,6 @@ taking precedence.
 
 ***
 
-### ChildlessHTMLElements
+### DOMEventName
 
-HTML elements that don't accept children, as defined by the
-[HTML spec](https://html.spec.whatwg.org/multipage/syntax.html#elements-2).
-
-***
-
-### NormalHTMLElements
-
-ReactHTML elements that accept children, as defined by the
-[HTML spec](https://html.spec.whatwg.org/multipage/syntax.html#elements-2).
-
-## child-elements
-
-[![react-distortion/child-elements bundlejs size](https://deno.bundlejs.com/badge?q=react-distortion/child-elements&badge=detailed)](https://bundlejs.com/?q=react-distortion/child-elements)
-
-A submodule of utility elements covering common use cases of
-[DistortOptions.distortChildren](#distortchildren). Imported from
-`react-distortion/child-elements`.
-
-Its elements are simple divs with classes pre-applied.
-Importing the module will inject its CSS into the head
-of the document. The CSS source can be found at
-[src/child-elements.module.css](https://github.com/cbunt/react-distortion/blob/main/src/child-elements.module.css).
-
-### DistortBackground
-
-A background overlay, for use with
-[distortChildren](#distortchildren).
-
-#### Remarks
-
-Background color can be set via the parent's background color
-or a `--background-color` css variable.
-
-The parent element's background should be transparent, either with
-`background: none` or `background-color: #0000`, and its position
-should be relative.
-
-***
-
-### DistortBorder
-
-A border overlay, for use with
-[distortChildren](#distortchildren).
-
-#### Remarks
-
-Color can be set via the `--border-color` css variable or the parent element's currentcolor.
-
-Border width should be set via a `--border-width` css variable, which is also used
-to calculate the element's position. `border-width: inherit` is used as a fallback, but
-may result in incorrect positioning. The parent element's position should be set to
-relative.
-
-***
-
-### DistortStyles
-
-The css classnames for this module's elements.
-
-#### Type declaration
-
-| Name | Type | Default value | Description |
-| ------ | ------ | ------ | ------ |
-| `border` | `string` | styles.border | [DistortBorder](#distortborder)'s base css class. |
-| `background` | `string` | styles.background | [DistortBackground](#distortbackground)'s base css class. |
+A union of the names of all DOM Events react exposes.

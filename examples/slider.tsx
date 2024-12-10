@@ -37,25 +37,23 @@ export function DistortSlider({
 
     return (
         <DistortComponent
+            as="input"
+            type="range"
+            className={style.dslider}
+            aria-label={label}
+            onChange={onChange}
+            {...sliderState}
             ref={distortionRef}
             hoverFilter={{
-                animation: 'alternating loop',
+                steps: 5,
+                alternate: true,
                 baseFrequency: 0.02,
                 scale: 6,
             }}
             activeFilter={{
-                animation: 'static',
                 baseFrequency: 0.02,
                 scale: 6,
             }}
-        >
-            <input
-                type="range"
-                className={style.dslider}
-                aria-label={label}
-                onChange={onChange}
-                {...sliderState}
-            />
-        </DistortComponent>
+        />
     );
 }

@@ -1,6 +1,5 @@
 import type { StoryDefault } from '@ladle/react';
 
-import { DistortBackground, DistortBorder } from '../src/child-elements';
 import DistortComponent from '../src/distort-component';
 import { DistortSlider } from './slider';
 
@@ -15,7 +14,6 @@ export const Button = () => (
         as="button"
         type="button"
         className={buttonStyle.dbutton}
-        distortChildren={DistortBorder}
         defaultFilter={{
             disable: true,
             scale: 5,
@@ -23,12 +21,12 @@ export const Button = () => (
             numOctaves: 1,
         }}
         hoverFilter={{
-            animation: 'alternating loop',
+            steps: 5,
+            alternate: true,
             scale: 4,
             baseFrequency: 0.01,
         }}
         activeFilter={{
-            animation: 'static',
             scale: 5,
             baseFrequency: 0.01,
         }}
@@ -44,7 +42,6 @@ export const TextBackground = () => (
             scale: 10,
             disable: true,
         }}
-        distortChildren={DistortBackground}
     >
         {`
 The background of the
@@ -57,18 +54,17 @@ TextBackground.storyName = 'Text Background';
 
 export const Checkbox = () => (
     <DistortComponent
+        as="input"
+        type="checkbox"
+        className={checkboxStyle.dcheckbox}
         defaultFilter={{ scale: 6 }}
-        activeFilter={{ animation: 'static' }}
+        activeFilter={{}}
         hoverFilter={{
-            animation: 'alternating loop',
+            steps: 5,
+            alternate: true,
             scale: 4,
         }}
-    >
-        <input
-            type="checkbox"
-            className={checkboxStyle.dcheckbox}
-        />
-    </DistortComponent>
+    />
 );
 
 export const Slider = () => (

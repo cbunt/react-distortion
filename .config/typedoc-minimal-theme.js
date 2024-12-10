@@ -1,7 +1,7 @@
 // @ts-check
-
-import { Comment, Converter, ReflectionKind } from 'typedoc';
 import { MarkdownThemeContext, MarkdownTheme, MarkdownPageEvent } from 'typedoc-plugin-markdown';
+import { Comment, Converter, ReflectionKind } from 'typedoc';
+
 
 /** 
  *  @param {import('typedoc').ContainerReflection} parent 
@@ -33,9 +33,6 @@ class MinimalMarkdownTheme extends MarkdownTheme {
     getRenderContext(page) {
         const context = new MarkdownThemeContext(this, page, this.application.options);
 
-        /** @type {typeof context.partials.typeDeclarationTable} */
-        const typeDeclarationTable = context.partials.typeDeclarationTable.bind(context);
-
         context.partials = {
             ...context.partials,
             // The package exports one function, and it's a component.
@@ -43,9 +40,6 @@ class MinimalMarkdownTheme extends MarkdownTheme {
             // The titles mostly reiterate the typings
             signatureTitle: () => '',
             declarationTitle: () => '',
-            // Table cell-safe line breaks around Remarks headers 
-            typeDeclarationTable: (model, props) => 
-                typeDeclarationTable(model, props).replaceAll('**Remarks**', '<br><br>**Remarks**<br>'),
         }
         return context;
     }

@@ -20,3 +20,46 @@
         --accent-3: #034cdf;
     }
 }
+
+.with-background {
+    position: relative;
+
+    &:before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        filter: var(--distortion-filter);
+
+        border-radius: inherit;
+        background-color: var(--background-color, inherit);
+    }
+}
+
+.bordered {
+    position: relative;
+
+    &:before {
+        content: '';
+        position: absolute;
+        z-index: 1;
+        pointer-events: none;
+        box-sizing: border-box;
+        color: inherit;
+    
+        width: calc(100% + var(--border-width, 0));
+        height: calc(100% + var(--border-width, 0));
+        top: calc(-0.5 * var(--border-width, 0));
+        left: calc(-0.5 * var(--border-width, 0));
+        filter: var(--distortion-filter);
+    
+        border: solid;
+        background-color: #0000;
+        border-radius: inherit;
+        border-width: var(--border-width, inherit);
+        border-color: var(--border-color, currentcolor);
+    }
+}

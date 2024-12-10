@@ -4,15 +4,12 @@ import DistortComponent from './distort-component';
 /**
  * Simple test cases for DistortComponent typing
  * Checked by tsc but otherwise ignored
- *
- * Failing as of 17-11-2024 due to 'as' not requiring
- * custom components to support children and style props.
  */
 
-// @ts-expect-error 'as' should support children and style
+// 'as' should allow components that don't support children
 <DistortComponent as="input" />;
 
-// @ts-expect-error 'as' should support children and style
+// @ts-expect-error 'as' should support style
 <DistortComponent as={() => <div />} />;
 
 // @ts-expect-error should only allow properties supported by 'as'

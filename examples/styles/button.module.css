@@ -1,11 +1,13 @@
 .dbutton {
     composes: variables from './variables.module.css';
+    composes: bordered from './variables.module.css';
 
     /* disable default styling */
     font: inherit;
     appearance: none;
     box-shadow: none;
     background-color: #0000;
+    border: none;
 
     /* button styling */
     color: var(--accent-1);
@@ -16,7 +18,7 @@
 
     /* DistortBorder styling */
     --border-width: 0.3rem;
-    position: relative;
+    
     display: inline-flex;
     align-items: center;
     justify-content: center;

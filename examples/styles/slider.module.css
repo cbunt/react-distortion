@@ -8,6 +8,7 @@
 
     /* disable default styling */
     background: #0000;
+    overflow: hidden;
     appearance: none;
 
     /* range styling */

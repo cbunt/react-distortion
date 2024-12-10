@@ -4,12 +4,11 @@
 const baseConfig = {
     entryPoints: [
         '../src/distort-component.tsx',
-        '../src/child-elements.tsx'
     ],
     plugin: [
-        'typedoc-plugin-dt-links',
-        'typedoc-plugin-merge-modules',
         'typedoc-plugin-markdown',
+        'typedoc-plugin-rename-defaults',
+        'typedoc-plugin-dt-links',
         './typedoc-minimal-theme.js',
     ],
     tsconfig: './tsconfig.json',
@@ -37,7 +36,7 @@ const baseConfig = {
 /** @type {Partial<import('typedoc-plugin-markdown').PluginOptions>} */
 const markdownConfig = {
     outputFileStrategy: 'modules',
-    typeDeclarationFormat: 'table',
+    typeDeclarationFormat: 'list',
     parametersFormat: 'table',
     enumMembersFormat: 'table',
     hidePageHeader: true,

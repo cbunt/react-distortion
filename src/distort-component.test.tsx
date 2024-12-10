@@ -5,19 +5,29 @@ import DistortComponent, { DistortHandle } from './distort-component';
 
 const id = 'test id';
 const filterRx = /url\s*\(#.*\)/;
+const filterId = 'distort-filter';
 
 const getDistort = (...[props]: Parameters<typeof DistortComponent>) => {
-    const result = render(<DistortComponent {...props} data-testid={id} />);
-    return result.getByTestId(id);
+    const result = render(
+        <DistortComponent filterId={filterId} {...props} data-testid={id} />,
+        { container: document.body },
+    );
+
+    return {
+        elm: result.getByTestId(id),
+        feTurbulence: document.querySelector('feTurbulence'),
+        feDisplacementMap: document.querySelector('feDisplacementMap'),
+    };
 };
 
 type TestHandle = { check: () => boolean };
+
 type TestProps = JSX.IntrinsicElements['div'] & {
     baseSeed?: number,
     ref?: TestHandle,
 };
 
-const TestComp = forwardRef(function TestCompt({
+const TestComponent = forwardRef(function TestComponent({
     baseSeed,
     ...rest
 }: TestProps, ref: Ref<TestHandle>) {
@@ -32,7 +42,7 @@ const TestComp = forwardRef(function TestCompt({
 
 describe('filter states', () => {
     test('disable', () => {
-        const elm = getDistort({ defaultFilter: { disable: true }, hoverFilter: { disable: false } });
+        const { elm } = getDistort({ defaultFilter: { disable: true }, hoverFilter: { disable: false } });
         let style = window.getComputedStyle(elm);
         expect(style.filter).toBe('');
 
@@ -41,26 +51,13 @@ describe('filter states', () => {
         expect(style.filter).toMatch(filterRx);
     });
 
-    test('distortChildren', () => {
-        const result = render(
-            <DistortComponent
-                defaultFilter={{ disable: true }}
-                distortChildren={<div data-testid={id} />}
-            />,
-        );
-        const child = result.getByTestId(id);
-        const style = window.getComputedStyle(child);
-        expect(style.filter).toMatch(filterRx);
-    });
-
     test('fallback values', () => {
-        const elm = getDistort({
+        const { elm, feTurbulence } = getDistort({
             defaultFilter: { numOctaves: 1, baseFrequency: 1 },
             hoverFilter: { numOctaves: 2 },
-            activeFilter: 'loop',
+            activeFilter: { steps: 5 },
         });
 
-        const feTurbulence = elm.querySelector('feTurbulence');
         expect(feTurbulence?.getAttribute('numOctaves')).toBe('1');
         expect(feTurbulence?.getAttribute('baseFrequency')).toBe('1');
 
@@ -74,14 +71,13 @@ describe('filter states', () => {
     });
 
     test('precedence', () => {
-        const elm = getDistort({
+        const { elm, feDisplacementMap } = getDistort({
             defaultFilter: { scale: 0 },
             hoverFilter: { scale: 1 },
             focusFilter: { scale: 2 },
             activeFilter: { scale: 3 },
         });
 
-        const feDisplacementMap = elm.querySelector('feDisplacementMap');
         expect(feDisplacementMap?.getAttribute('scale')).toBe('0');
 
         fireEvent.mouseEnter(elm);
@@ -113,20 +109,19 @@ describe('filter states', () => {
     test('alternating', () => {
         jest.useFakeTimers();
 
-        const elm = getDistort({
+        const { elm, feTurbulence } = getDistort({
             defaultFilter: {
-                animation: 'alternating endless',
+                alternate: true,
                 animationInterval: 1,
                 numOctaves: 1,
             },
             hoverFilter: {
-                animation: 'alternating endless',
+                alternate: true,
                 animationInterval: 1,
                 numOctaves: 2,
             },
         });
 
-        const feTurbulence = elm.querySelector('feTurbulence');
         expect(feTurbulence?.getAttribute('numOctaves')).toBe('1');
 
         act(() => { jest.advanceTimersByTime(1); });
@@ -142,19 +137,57 @@ describe('filter states', () => {
         expect(feTurbulence?.getAttribute('numOctaves')).toBe('2');
     });
 
-    test('distortChildren as component', () => {
-        const elm = getDistort({ distortChildren: TestComp });
-        const child = elm.querySelector('[id="dummy"]');
-        expect(child).toBeDefined();
+    test('alternating properties', () => {
+        jest.useFakeTimers();
 
-        const style = window.getComputedStyle(child as Element);
-        expect(style.filter).toMatch(filterRx);
+        const { feTurbulence, feDisplacementMap } = getDistort({
+            defaultFilter: {
+                animationInterval: 1,
+                baseFrequency: 1,
+                scale: 1,
+                alternate: {
+                    baseFrequency: 2,
+                },
+            },
+        });
+
+        expect(feTurbulence?.getAttribute('numOctaves')).toBe('3');
+        expect(feTurbulence?.getAttribute('baseFrequency')).toBe('1');
+        expect(feDisplacementMap?.getAttribute('scale')).toBe('1');
+
+        act(() => { jest.advanceTimersByTime(1); });
+        expect(feTurbulence?.getAttribute('numOctaves')).toBe('3');
+        expect(feTurbulence?.getAttribute('baseFrequency')).toBe('2');
+        expect(feDisplacementMap?.getAttribute('scale')).toBe('1');
     });
 
     test('filterId', () => {
-        const elm = getDistort({ filterId: 'distortion' });
-        const filter = elm.querySelector('[id="distortion"]');
+        getDistort({ filterId: 'distortion' });
+        const filter = document.querySelector('[id="distortion"]');
         expect(filter).not.toBe(null);
+    });
+
+    test('invalid value', () => {
+        jest.useFakeTimers();
+
+        const { feTurbulence } = getDistort({
+            defaultFilter: {
+                numOctaves: 1,
+                animationInterval: 2,
+                animationJitter: -1,
+                alternate: {
+                    numOctaves: 2,
+                },
+            },
+        });
+
+        expect(feTurbulence?.getAttribute('numOctaves')).toBe('1');
+        act(() => { jest.advanceTimersByTime(1); });
+
+        expect(feTurbulence?.getAttribute('numOctaves')).toBe('1');
+
+        act(() => { jest.advanceTimersByTime(1); });
+        expect(feTurbulence?.getAttribute('numOctaves')).toBe('2');
     });
 });
 
@@ -162,15 +195,14 @@ describe('seed changes', () => {
     beforeEach(() => jest.useFakeTimers());
 
     test('animationInterval', () => {
-        const elm = getDistort({
+        const { feTurbulence } = getDistort({
             defaultFilter: {
-                animation: 'loop',
+                steps: 5,
                 animationInterval: 2,
             },
             baseSeed: 0,
         });
 
-        const feTurbulence = elm.querySelector('feTurbulence');
         expect(feTurbulence?.getAttribute('seed')).toBe('0');
 
         act(() => { jest.advanceTimersByTime(1); });
@@ -183,14 +215,13 @@ describe('seed changes', () => {
     test('refreshSeed / getDistortionSeed', () => {
         const ref: Ref<DistortHandle> = { current: null };
 
-        const elm = getDistort({
+        const { feTurbulence } = getDistort({
             baseSeed: 0,
             minRefresh: 0,
             ref,
             getDistortionSeed: () => 2,
         });
 
-        const feTurbulence = elm.querySelector('feTurbulence');
         expect(feTurbulence?.getAttribute('seed')).toBe('0');
 
         act(() => { ref.current?.refreshSeed(1); });
@@ -208,13 +239,12 @@ describe('seed changes', () => {
 
         const ref: Ref<DistortHandle> = { current: null };
 
-        const elm = getDistort({
+        const { feTurbulence } = getDistort({
             baseSeed: 0,
             minRefresh: 1,
             ref,
         });
 
-        const feTurbulence = elm.querySelector('feTurbulence');
         expect(feTurbulence?.getAttribute('seed')).toBe('0');
 
         act(() => ref.current?.refreshSeed(1));
@@ -228,17 +258,15 @@ describe('seed changes', () => {
     test('steps', () => {
         const seeds: (string | undefined | null)[] = [];
 
-        const elm = getDistort({
+        const { feTurbulence } = getDistort({
             baseSeed: 0,
             minRefresh: 0,
             defaultFilter: {
                 animationInterval: 1,
-                animation: 'loop',
                 steps: 3,
             },
         });
 
-        const feTurbulence = elm.querySelector('feTurbulence');
         seeds.push(feTurbulence?.getAttribute('seed'));
 
         act(() => { jest.advanceTimersByTime(1); });
@@ -257,32 +285,9 @@ describe('seed changes', () => {
         expect(feTurbulence?.getAttribute('seed')).toBe(seeds[2]);
     });
 
-    test('disabled with distortChildren', () => {
-        const elm = getDistort({
-            baseSeed: 0,
-            minRefresh: 0,
-            defaultFilter: {
-                disable: true,
-                animationInterval: 1,
-                animation: 'loop',
-            },
-            distortChildren: <div />,
-        });
-
-        const feTurbulence = elm.querySelector('feTurbulence');
-        expect(feTurbulence?.getAttribute('seed')).toBe('0');
-
-        act(() => { jest.advanceTimersByTime(1); });
-        expect(feTurbulence?.getAttribute('seed')).toBe('1');
-
-        const style = window.getComputedStyle(elm);
-        expect(style.filter).toBe('');
-    });
-
     test('resetSeed', () => {
-        const elm = getDistort({
+        const { elm, feTurbulence } = getDistort({
             defaultFilter: {
-                animation: 'endless',
                 resetSeed: true,
                 animationInterval: 1,
             },
@@ -292,7 +297,6 @@ describe('seed changes', () => {
             getDistortionSeed: () => 1,
         });
 
-        const feTurbulence = elm.querySelector('feTurbulence');
         expect(feTurbulence?.getAttribute('seed')).toBe('0');
 
         act(() => { jest.advanceTimersByTime(1); });
@@ -308,9 +312,9 @@ describe('seed changes', () => {
     test('animationJitter', () => {
         Math.random = jest.fn(() => 1);
 
-        const elm = getDistort({
+        const { elm, feTurbulence } = getDistort({
             defaultFilter: {
-                animation: 'loop',
+                steps: 5,
                 animationInterval: 1,
                 animationJitter: 1,
             },
@@ -320,7 +324,6 @@ describe('seed changes', () => {
             baseSeed: 0,
         });
 
-        const feTurbulence = elm.querySelector('feTurbulence');
         expect(feTurbulence?.getAttribute('seed')).toBe('0');
 
         act(() => { jest.advanceTimersByTime(1); });
@@ -330,6 +333,8 @@ describe('seed changes', () => {
         expect(feTurbulence?.getAttribute('seed')).toBe('1');
 
         fireEvent.mouseEnter(elm);
+        expect(feTurbulence?.getAttribute('seed')).toBe('0');
+
         act(() => { jest.advanceTimersByTime(1); });
         expect(feTurbulence?.getAttribute('seed')).toBe('0');
 
@@ -339,29 +344,13 @@ describe('seed changes', () => {
         act(() => { jest.advanceTimersByTime(1); });
         expect(feTurbulence?.getAttribute('seed')).toBe('1');
     });
-
-    test('static', () => {
-        const elm = getDistort({
-            defaultFilter: { animationInterval: 1 },
-            baseSeed: 0,
-            minRefresh: 0,
-            getDistortionSeed: () => 1,
-        });
-
-        const feTurbulence = elm.querySelector('feTurbulence');
-        expect(feTurbulence?.getAttribute('seed')).toBe('0');
-
-        act(() => { jest.advanceTimersByTime(1); });
-        expect(feTurbulence?.getAttribute('seed')).toBe('0');
-    });
 });
 
 describe('prop pass through', () => {
     test('events', () => {
-        let successes = 0;
-        const succeed = () => ++successes;
+        const succeed = jest.fn(() => {});
 
-        const elm = getDistort({
+        const { elm } = getDistort({
             hoverFilter: { disable: true },
             onMouseEnter: succeed,
             onMouseLeave: succeed,
@@ -372,31 +361,31 @@ describe('prop pass through', () => {
         });
 
         fireEvent.mouseEnter(elm);
-        expect(successes).toBe(1);
+        expect(succeed).toHaveBeenCalledTimes(1);
 
         const style = window.getComputedStyle(elm);
         expect(style.filter).toBe('');
 
         fireEvent.mouseLeave(elm);
-        expect(successes).toBe(2);
+        expect(succeed).toHaveBeenCalledTimes(2);
 
         fireEvent.focus(elm);
-        expect(successes).toBe(3);
+        expect(succeed).toHaveBeenCalledTimes(3);
 
         fireEvent.blur(elm);
-        expect(successes).toBe(4);
+        expect(succeed).toHaveBeenCalledTimes(4);
 
         fireEvent.mouseDown(elm);
-        expect(successes).toBe(5);
+        expect(succeed).toHaveBeenCalledTimes(5);
 
         fireEvent.mouseUp(elm);
-        expect(successes).toBe(6);
+        expect(succeed).toHaveBeenCalledTimes(6);
     });
 
     test('css filter', () => {
         const filter = 'brightness(90%)';
 
-        const elm = getDistort({
+        const { elm } = getDistort({
             style: { filter },
             focusFilter: { disable: true },
         });
@@ -413,19 +402,19 @@ describe('prop pass through', () => {
 
     test('misc style', () => {
         const color = 'red';
-        const elm = getDistort({ style: { color } });
+        const { elm } = getDistort({ style: { color } });
         const style = window.getComputedStyle(elm);
         expect(style.color).toMatch(color);
     });
 
     test('forwardRef', () => {
         const ref: Ref<TestHandle> = { current: null };
-        render(<DistortComponent as={TestComp} forwardedRef={ref} />);
+        render(<DistortComponent as={TestComponent} forwardedRef={ref} />);
         expect(ref.current?.check()).toBeTruthy();
     });
 
     test('as props', () => {
-        const elm = getDistort({ as: 'a', href: './' });
+        const { elm } = getDistort({ as: 'a', href: './' });
         expect(elm.tagName).toBe('A');
         expect(elm.getAttribute('href')).toBe('./');
     });
@@ -436,20 +425,10 @@ describe('prop pass through', () => {
         getDistort({
             baseSeed: 0,
             ref,
-            as: TestComp,
+            as: TestComponent,
         });
 
         expect(ref.current?.refreshSeed).toBeDefined();
         expect(ref.current?.check).toBeUndefined();
-    });
-
-    test('distortChildren style', () => {
-        const childComp = <TestComp style={{ color: 'red' }} />;
-        const elm = getDistort({ distortChildren: childComp });
-        const child = elm.querySelector('[id="dummy"]');
-        expect(child).toBeDefined();
-
-        const style = window.getComputedStyle(child as Element);
-        expect(style.color).toBe('red');
     });
 });
