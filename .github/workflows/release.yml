@@ -53,6 +53,11 @@ jobs:
       - name: Build Readme
         run:  pnpm run docs
 
+      - name: Publish to npm 
+        run: pnpm publish ${{ inputs.dry && '--dry-run' || '' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Commit Updates
         uses: stefanzweifel/git-auto-commit-action@v5
         if: ${{ !inputs.dry }}
@@ -72,8 +77,3 @@ jobs:
           name: 'Release v${{ steps.bump_version.outputs.version }}'
           body: ${{ steps.changes.outputs.changes }}
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish to npm 
-        run: pnpm publish ${{ inputs.dry && '--dry-run' || '' }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
