@@ -86,7 +86,7 @@ function resolveFilter(
     filter: DistortFilterOptions | undefined,
     alternateCurrent: boolean,
 ) {
-    const alternate = alternateCurrent && (filter?.alternate ?? defaultFilter?.alternate ?? false);
+    const alternate = filter?.alternate ?? defaultFilter?.alternate ?? false;
     const animationJitter = clampToUndefined(filter?.animationJitter ?? defaultFilter?.animationJitter);
     const steps = clampToUndefined(filter?.steps ?? defaultFilter?.steps);
 
@@ -99,9 +99,9 @@ function resolveFilter(
         animationInterval,
         resetSeed: filter?.resetSeed ?? defaultFilter?.resetSeed ?? defaultProps.resetSeed,
         disable: filter?.disable ?? defaultProps.disable,
-        baseFrequency: alternateProperty('baseFrequency', alternate, defaultFilter, filter),
-        scale: alternateProperty('scale', alternate, defaultFilter, filter),
-        numOctaves: alternateProperty('numOctaves', alternate, defaultFilter, filter),
+        baseFrequency: alternateProperty('baseFrequency', alternateCurrent && alternate, defaultFilter, filter),
+        scale: alternateProperty('scale', alternateCurrent && alternate, defaultFilter, filter),
+        numOctaves: alternateProperty('numOctaves', alternateCurrent && alternate, defaultFilter, filter),
     };
 }
 
