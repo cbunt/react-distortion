@@ -401,10 +401,10 @@ describe('prop pass through', () => {
     });
 
     test('misc style', () => {
-        const color = 'red';
-        const { elm } = getDistort({ style: { color } });
+        const height = '1rem';
+        const { elm } = getDistort({ style: { height } });
         const style = window.getComputedStyle(elm);
-        expect(style.color).toMatch(color);
+        expect(style.height).toMatch(height);
     });
 
     test('forwardRef', () => {
